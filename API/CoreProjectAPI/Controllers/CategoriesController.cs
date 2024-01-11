@@ -10,8 +10,9 @@ namespace CoreProjectAPI.Controllers
     [ApiController]
     public class CategoriesController(ICategoryRepository categoryRepository) : ControllerBase
     {
+        // POST: 'http://localhost:5204/api/categories'
         [HttpPost]
-        public async Task<IActionResult> CreateCategory(CreateCategoryRequestDto request)
+        public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequestDto request)
         {
             var category = new Category
             {
@@ -19,6 +20,35 @@ namespace CoreProjectAPI.Controllers
                 UrlHandle = request.UrlHandle,
             };
             await categoryRepository.CreateAsync(category);
+            var response = new CategoryDto
+            {
+                Id = category.Id,
+                Name = category.Name,
+                UrlHandle = category.UrlHandle,
+            };
+            return Ok(response);
+        }
+
+        // GET: 'http://localhost:5204/api/categories'
+        [HttpGet]
+        public async Task<IActionResult> GetAllCategories()
+        {
+            var categories = await categoryRepository.GetAllAsync();
+            var response = categories.Select(category => new CategoryDto
+                { Id = category.Id, Name = category.Name, UrlHandle = category.UrlHandle, }).ToList();
+            return Ok(response);
+        }
+
+        // GET: http://localhost:5204/api/categories/{id}
+        [HttpGet]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> GetCategoryById([FromRoute] Guid id)
+        {
+            var category = await categoryRepository.GetById(id);
+            if (category is null)
+            {
+                return NotFound();
+            }
             var response = new CategoryDto
             {
                 Id = category.Id,
