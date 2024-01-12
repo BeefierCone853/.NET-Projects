@@ -1,4 +1,3 @@
-using CoreProjectAPI.Data;
 using CoreProjectAPI.Models.Domain;
 using CoreProjectAPI.Models.DTO;
 using CoreProjectAPI.Repositories.Interface;
@@ -20,12 +19,10 @@ namespace CoreProjectAPI.Controllers
                 UrlHandle = request.UrlHandle,
             };
             await categoryRepository.CreateAsync(category);
-            var response = new CategoryDto
-            {
-                Id = category.Id,
-                Name = category.Name,
-                UrlHandle = category.UrlHandle,
-            };
+            var response = new CategoryDto(
+                Id: category.Id,
+                Name: category.Name,
+                UrlHandle: category.UrlHandle);
             return Ok(response);
         }
 
@@ -34,8 +31,11 @@ namespace CoreProjectAPI.Controllers
         public async Task<IActionResult> GetAllCategories()
         {
             var categories = await categoryRepository.GetAllAsync();
-            var response = categories.Select(category => new CategoryDto
-                { Id = category.Id, Name = category.Name, UrlHandle = category.UrlHandle, }).ToList();
+            var response = categories
+                .Select(category => new CategoryDto(
+                    category.Id,
+                    category.Name,
+                    category.UrlHandle)).ToList();
             return Ok(response);
         }
 
@@ -44,17 +44,61 @@ namespace CoreProjectAPI.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetCategoryById([FromRoute] Guid id)
         {
-            var category = await categoryRepository.GetById(id);
+            var category = await categoryRepository.GetByIdAsync(id);
             if (category is null)
             {
                 return NotFound();
             }
-            var response = new CategoryDto
+
+            var response = new CategoryDto(
+                Id: category.Id,
+                Name: category.Name,
+                UrlHandle: category.UrlHandle);
+            return Ok(response);
+        }
+
+        // PUT: http://localhost:5204/api/categories/{id}
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> EditCategoryById(
+            [FromRoute] Guid id,
+            UpdateCategoryRequestDto request)
+        {
+            var category = new Category
             {
-                Id = category.Id,
-                Name = category.Name,
-                UrlHandle = category.UrlHandle,
+                Id = id,
+                Name = request.Name,
+                UrlHandle = request.UrlHandle
             };
+            category = await categoryRepository.EditAsync(category);
+            if (category is null)
+            {
+                return NotFound();
+            }
+
+            var response = new CategoryDto(
+                Id: category.Id,
+                Name: category.Name,
+                UrlHandle: category.UrlHandle
+            );
+            return Ok(response);
+        }
+        
+        // DELETE: http://localhost:5204/api/categories/{id}
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> DeleteCategoryById([FromRoute] Guid id)
+        {
+            var category = await categoryRepository.DeleteAsync(id);
+            if (category is null)
+            {
+                return NotFound();
+            }
+
+            var response = new CategoryDto(
+                Id: category.Id,
+                Name: category.Name,
+                UrlHandle: category.UrlHandle);
             return Ok(response);
         }
     }

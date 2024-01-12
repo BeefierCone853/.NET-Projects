@@ -1,3 +1,4 @@
+using System.Formats.Asn1;
 using CoreProjectAPI.Data;
 using CoreProjectAPI.Models.Domain;
 using CoreProjectAPI.Repositories.Interface;
@@ -19,8 +20,29 @@ public class CategoryRepository(ApplicationDbContext dbContext) : ICategoryRepos
         return await dbContext.Categories.ToListAsync();
     }
 
-    public async Task<Category?> GetById(Guid id)
+    public async Task<Category?> GetByIdAsync(Guid id)
     {
         return await dbContext.Categories.FirstOrDefaultAsync(x => x.Id == id);
+    }
+
+    public async Task<Category?> EditAsync(Category category)
+    {
+        var existingCategory = await dbContext.Categories.FirstOrDefaultAsync(x => x.Id == category.Id);
+        if (existingCategory is null) return null;
+        dbContext.Entry(existingCategory).CurrentValues.SetValues(category);
+        await dbContext.SaveChangesAsync();
+        return category;
+    }
+
+    public async Task<Category?> DeleteAsync(Guid id)
+    {
+        var existingCategory = await dbContext.Categories.FirstOrDefaultAsync(x => x.Id == id);
+        if (existingCategory is null)
+        {
+            return null;
+        }
+        dbContext.Categories.Remove(existingCategory);
+        await dbContext.SaveChangesAsync();
+        return existingCategory;
     }
 }
