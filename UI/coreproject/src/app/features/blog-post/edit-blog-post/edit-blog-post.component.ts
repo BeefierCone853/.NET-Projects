@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { BlogPostService } from '../services/blog-post.service';
 import { BlogPost } from '../models/blog-post.model';
@@ -9,12 +9,13 @@ import { MarkdownModule } from 'ngx-markdown';
 import { CategoryService } from '../../category/services/category.service';
 import { Category } from '../../category/models/category.model';
 import { EditBlogPost } from '../models/edit-blog-post.model';
-import { response } from 'express';
+import { ImageSelectorComponent } from '../../../shared/components/image-selector/image-selector.component';
+import { ImageService } from '../../../shared/components/image-selector/image.service';
 
 @Component({
   selector: 'app-edit-blog-post',
   standalone: true,
-  imports: [CommonModule, FormsModule, MarkdownModule],
+  imports: [CommonModule, FormsModule, MarkdownModule, ImageSelectorComponent],
   templateUrl: './edit-blog-post.component.html',
   styleUrl: './edit-blog-post.component.css',
 })
@@ -24,15 +25,18 @@ export class EditBlogPostComponent implements OnInit, OnDestroy {
   getBlogPostSubscription?: Subscription;
   editBlogPostSubscription?: Subscription;
   deleteBlogPostSubscription?: Subscription;
+  imageSelectSubscription?: Subscription;
   blogPost?: BlogPost;
   categories$?: Observable<Category[]>;
   selectedCategories?: string[];
+  isImageSelectorOpened: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private blogPostService: BlogPostService,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private imageService: ImageService
   ) {}
   ngOnInit(): void {
     this.categories$ = this.categoryService.getAllCategories();
@@ -51,6 +55,14 @@ export class EditBlogPostComponent implements OnInit, OnDestroy {
               },
             });
         }
+        this.imageSelectSubscription = this.imageService.onSelectImage().subscribe({
+          next: (response) => {
+            if (this.blogPost) {
+              this.blogPost.featuredImageUrl = response.url;
+              this.isImageSelectorOpened = false
+            }
+          },
+        });
       },
     });
   }
@@ -59,6 +71,7 @@ export class EditBlogPostComponent implements OnInit, OnDestroy {
     this.getBlogPostSubscription?.unsubscribe();
     this.editBlogPostSubscription?.unsubscribe();
     this.deleteBlogPostSubscription?.unsubscribe();
+    this.imageSelectSubscription?.unsubscribe();
   }
   onEditBlogPost() {
     if (this.blogPost && this.id) {
@@ -92,5 +105,12 @@ export class EditBlogPostComponent implements OnInit, OnDestroy {
           },
         });
     }
+  }
+  onOpenImageSelector(): void {
+    this.isImageSelectorOpened = true;
+  }
+  onCloseImageSelector(): void {
+    this.isImageSelectorOpened = false;
+    console.log(this.isImageSelectorOpened);
   }
 }
