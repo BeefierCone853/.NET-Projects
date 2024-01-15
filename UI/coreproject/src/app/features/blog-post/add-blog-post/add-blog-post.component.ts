@@ -3,7 +3,6 @@ import { AddBlogPost } from '../models/add-blog-post.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BlogPostService } from '../services/blog-post.service';
-import { response } from 'express';
 import { Router } from '@angular/router';
 import { MarkdownModule } from 'ngx-markdown';
 import { CategoryService } from '../../category/services/category.service';

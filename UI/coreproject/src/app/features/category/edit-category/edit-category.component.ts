@@ -18,7 +18,9 @@ import { response } from 'express';
 export class EditCategoryComponent implements OnInit, OnDestroy {
   id: string | null = null;
   paramsSubscription?: Subscription;
+  getCategorySubscription?: Subscription;
   editCategorySubscription?: Subscription;
+  deleteCategorySubscription?: Subscription;
   category?: Category;
 
   constructor(
@@ -31,25 +33,29 @@ export class EditCategoryComponent implements OnInit, OnDestroy {
       next: (params) => {
         this.id = params.get('id');
         if (this.id) {
-          this.categoryService.getCategoryById(this.id).subscribe({
-            next: (response) => {
-              this.category = response;
-            },
-          });
+          this.getCategorySubscription = this.categoryService
+            .getCategoryById(this.id)
+            .subscribe({
+              next: (response) => {
+                this.category = response;
+              },
+            });
         }
       },
     });
   }
   ngOnDestroy(): void {
     this.paramsSubscription?.unsubscribe();
+    this.getCategorySubscription?.unsubscribe();
     this.editCategorySubscription?.unsubscribe();
+    this.deleteCategorySubscription?.unsubscribe();
   }
   onEditCategory(): void {
     const updateCategoryRequest: UpdateCategoryRequest = {
       name: this.category?.name ?? '',
       urlHandle: this.category?.urlHandle ?? '',
     };
-    if (this.category?.id) {
+    if (this.category && this.category?.id) {
       this.categoryService
         .editCategoryById(this.category.id, updateCategoryRequest)
         .subscribe({
@@ -61,11 +67,13 @@ export class EditCategoryComponent implements OnInit, OnDestroy {
   }
   onDeleteCategory(): void {
     if (this.id) {
-      this.categoryService.deleteCategoryById(this.id).subscribe({
-        next: (response) => {
-          this.router.navigateByUrl('/admin/categories');
-        },
-      });
+      this.deleteCategorySubscription = this.categoryService
+        .deleteCategoryById(this.id)
+        .subscribe({
+          next: (response) => {
+            this.router.navigateByUrl('/admin/categories');
+          },
+        });
     }
   }
 }
