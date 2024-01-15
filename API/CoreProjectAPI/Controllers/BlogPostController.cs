@@ -81,5 +81,122 @@ namespace CoreProjectAPI.Controllers
                 ).ToList()));
             return Ok(response);
         }
+
+        // GET: 'http://localhost:5204/api/blogpost/{id}'
+        [HttpGet]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> GetBlogPostById([FromRoute] Guid id)
+        {
+            var blogPost = await blogPostRepository.GetByIdAsync(id);
+            if (blogPost is null)
+            {
+                return NotFound();
+            }
+
+            var response = new BlogPostDto(
+                Id: blogPost.Id,
+                Author: blogPost.Author,
+                Title: blogPost.Title,
+                Content: blogPost.Content,
+                FeaturedImageUrl: blogPost.FeaturedImageUrl,
+                IsVisible: blogPost.IsVisible,
+                UrlHandle: blogPost.UrlHandle,
+                PublishedDate: blogPost.PublishedDate,
+                ShortDescription: blogPost.ShortDescription,
+                Categories: blogPost.Categories.Select(
+                    category => new CategoryDto(
+                        Id: category.Id,
+                        Name: category.Name,
+                        UrlHandle: category.UrlHandle)
+                ).ToList()
+            );
+            return Ok(response);
+        }
+
+        // PUT: 'http://localhost:5204/api/blogpost/{id}'
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> EditBlogPostById(
+            [FromRoute] Guid id,
+            UpdateBlogPostRequestDto request)
+        {
+            var blogPost = new BlogPost
+            {
+                Id = id,
+                Categories = new List<Category>(),
+                UrlHandle = request.UrlHandle,
+                PublishedDate = request.PublishedDate,
+                ShortDescription = request.ShortDescription,
+                Author = request.Author,
+                Title = request.Title,
+                Content = request.Content,
+                FeaturedImageUrl = request.FeaturedImageUrl,
+                IsVisible = request.IsVisible
+            };
+            foreach (var categoryGuid in request.Categories)
+            {
+                var existingCategory = await categoryRepository.GetByIdAsync(categoryGuid);
+                if (existingCategory is not null)
+                {
+                    blogPost.Categories.Add(existingCategory);
+                }
+            }
+
+            var updatedBlogPost = await blogPostRepository.EditAsync(blogPost);
+            if (updatedBlogPost is null)
+            {
+                return NotFound();
+            }
+
+            var response = new BlogPostDto(
+                Id: blogPost.Id,
+                Author: blogPost.Author,
+                Title: blogPost.Title,
+                Content: blogPost.Content,
+                FeaturedImageUrl: blogPost.FeaturedImageUrl,
+                IsVisible: blogPost.IsVisible,
+                UrlHandle: blogPost.UrlHandle,
+                PublishedDate: blogPost.PublishedDate,
+                ShortDescription: blogPost.ShortDescription,
+                Categories: blogPost.Categories.Select(
+                    category => new CategoryDto(
+                        Id: category.Id,
+                        Name: category.Name,
+                        UrlHandle: category.UrlHandle)
+                ).ToList()
+            );
+            return Ok(response);
+        }
+
+        // DELETE: 'http://localhost:5204/api/blogpost/{id}'
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> DeleteBlogPostById([FromRoute] Guid id)
+        {
+            var deletedBlogPost = await blogPostRepository.DeleteAsync(id);
+            if (deletedBlogPost is null)
+            {
+                return NotFound();
+            }
+
+            var response = new BlogPostDto(
+                Id: deletedBlogPost.Id,
+                Author: deletedBlogPost.Author,
+                Title: deletedBlogPost.Title,
+                Content: deletedBlogPost.Content,
+                FeaturedImageUrl: deletedBlogPost.FeaturedImageUrl,
+                IsVisible: deletedBlogPost.IsVisible,
+                UrlHandle: deletedBlogPost.UrlHandle,
+                PublishedDate: deletedBlogPost.PublishedDate,
+                ShortDescription: deletedBlogPost.ShortDescription,
+                Categories: deletedBlogPost.Categories.Select(
+                    category => new CategoryDto(
+                        Id: category.Id,
+                        Name: category.Name,
+                        UrlHandle: category.UrlHandle)
+                ).ToList()
+            );
+            return Ok(response);
+        }
     }
 }

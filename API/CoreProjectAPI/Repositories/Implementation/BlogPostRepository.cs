@@ -16,24 +16,47 @@ public class BlogPostRepository(ApplicationDbContext dbContext) : IBlogPostRepos
 
     public async Task<IEnumerable<BlogPost>> GetAllAsync()
     {
-        return await dbContext.
-            BlogPosts.
-            Include(x => x.Categories).
-            ToListAsync();
+        return await dbContext
+            .BlogPosts
+            .Include(x => x.Categories)
+            .ToListAsync();
     }
 
-    public Task<BlogPost?> GetByIdAsync(Guid id)
+    public async Task<BlogPost?> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await dbContext
+            .BlogPosts
+            .Include(x => x.Categories)
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public Task<BlogPost?> EditAsync(BlogPost blogPost)
+    public async Task<BlogPost?> EditAsync(BlogPost blogPost)
     {
-        throw new NotImplementedException();
+        var existingBlogPost = await dbContext.BlogPosts
+            .Include(x => x.Categories)
+            .FirstOrDefaultAsync(x => x.Id == blogPost.Id);
+        if (existingBlogPost is null)
+        {
+            return null;
+        }
+        dbContext.Entry(existingBlogPost).CurrentValues.SetValues(blogPost);
+        existingBlogPost.Categories = blogPost.Categories;
+        await dbContext.SaveChangesAsync();
+        return blogPost;
     }
 
-    public Task<BlogPost?> DeleteAsync(Guid id)
+    public async Task<BlogPost?> DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var existingBlogPost = await dbContext.BlogPosts
+            .Include(x => x.Categories)
+            .FirstOrDefaultAsync(x => x.Id == id);
+        if (existingBlogPost is null)
+        {
+            return null;
+        }
+
+        dbContext.BlogPosts.Remove(existingBlogPost);
+        await dbContext.SaveChangesAsync();
+        return existingBlogPost;
     }
 }
