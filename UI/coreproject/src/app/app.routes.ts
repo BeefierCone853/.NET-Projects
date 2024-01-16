@@ -5,8 +5,20 @@ import { EditCategoryComponent } from './features/category/edit-category/edit-ca
 import { BlogPostListComponent } from './features/blog-post/blog-post-list/blog-post-list.component';
 import { AddBlogPostComponent } from './features/blog-post/add-blog-post/add-blog-post.component';
 import { EditBlogPostComponent } from './features/blog-post/edit-blog-post/edit-blog-post.component';
+import { HomeComponent } from './public/home/home.component';
+import { BlogDetailsComponent } from './public/blog-details/blog-details.component';
 
 export const routes: Routes = [
+  {
+    path: '',
+    title: 'Home',
+    component: HomeComponent,
+  },
+  {
+    path: 'blog/:url',
+    title: 'Blog Details',
+    component: BlogDetailsComponent,
+  },
   {
     path: 'admin/categories',
     title: 'Categories',
