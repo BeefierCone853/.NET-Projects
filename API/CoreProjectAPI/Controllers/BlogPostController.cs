@@ -113,6 +113,37 @@ namespace CoreProjectAPI.Controllers
             return Ok(response);
         }
 
+        // GET: 'http://localhost:5204/api/blogpost/{urlHandle}'
+        [HttpGet]
+        [Route("{urlHandle}")]
+        public async Task<IActionResult> GetBlogPostByUrlHandle([FromRoute] string urlHandle)
+        {
+            var blogPost = await blogPostRepository.GetByUrlHandleAsync(urlHandle);
+            if (blogPost is null)
+            {
+                return NotFound();
+            }
+
+            var response = new BlogPostDto(
+                Id: blogPost.Id,
+                Author: blogPost.Author,
+                Title: blogPost.Title,
+                Content: blogPost.Content,
+                FeaturedImageUrl: blogPost.FeaturedImageUrl,
+                IsVisible: blogPost.IsVisible,
+                UrlHandle: blogPost.UrlHandle,
+                PublishedDate: blogPost.PublishedDate,
+                ShortDescription: blogPost.ShortDescription,
+                Categories: blogPost.Categories.Select(
+                    category => new CategoryDto(
+                        Id: category.Id,
+                        Name: category.Name,
+                        UrlHandle: category.UrlHandle)
+                ).ToList()
+            );
+            return Ok(response);
+        }
+
         // PUT: 'http://localhost:5204/api/blogpost/{id}'
         [HttpPut]
         [Route("{id:Guid}")]
