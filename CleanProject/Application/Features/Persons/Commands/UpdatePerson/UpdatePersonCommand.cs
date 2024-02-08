@@ -3,4 +3,4 @@ using MediatR;
 
 namespace Application.Features.Persons.Commands.UpdatePerson;
 
-public sealed record UpdatePersonCommand(UpdatePersonDto PersonDto) : IRequest<Unit>;
+public sealed record UpdatePersonCommand(UpdatePersonDto UpdatePersonDto) : IRequest<Unit>;

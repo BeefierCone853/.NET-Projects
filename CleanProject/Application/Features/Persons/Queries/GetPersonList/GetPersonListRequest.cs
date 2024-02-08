@@ -1,4 +1,3 @@
-using Application.DTOs;
 using Application.DTOs.Persons;
 using MediatR;
 

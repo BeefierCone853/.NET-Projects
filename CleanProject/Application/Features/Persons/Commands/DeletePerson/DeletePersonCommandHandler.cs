@@ -3,13 +3,13 @@ using MediatR;
 
 namespace Application.Features.Persons.Commands.DeletePerson;
 
-public class DeletePersonCommandHandler(
+internal sealed class DeletePersonCommandHandler(
     IPersonRepository personRepository) : IRequestHandler<DeletePersonCommand, Unit>
 {
     public async Task<Unit> Handle(DeletePersonCommand request, CancellationToken cancellationToken)
     {
         var person = await personRepository.Get(request.Id);
-        await personRepository.Delete(person);
+        if (person != null) await personRepository.Delete(person);
         return Unit.Value;
     }
 }

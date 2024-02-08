@@ -2,9 +2,9 @@ using Domain.Primitives;
 
 namespace Domain.Entities;
 
-public sealed class Person(int id, string firstName, string lastName, string collegeName) : Entity(id)
+public sealed class Person : Entity
 {
-    public string FirstName { get; private set; } = firstName;
-    public string LastName { get; private set; } = lastName;
-    public string CollegeName { get; private set; } = collegeName;
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string CollegeName { get; set; }
 }

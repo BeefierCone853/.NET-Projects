@@ -4,21 +4,21 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <InvariantGlobalization>true</InvariantGlobalization>
-    <UserSecretsId>94609ed2-51e5-4122-ae2c-86adb0d7057b</UserSecretsId>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <UserSecretsId>925e1a3c-7140-4819-a79c-027d85a977b9</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1" />
+    <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
-    <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\Persistence\Persistence.csproj" />
     <ProjectReference Include="..\Presentation\Presentation.csproj" />
   </ItemGroup>
 

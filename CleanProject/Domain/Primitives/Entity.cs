@@ -1,6 +1,6 @@
 namespace Domain.Primitives;
 
-public abstract class Entity(int id)
+public abstract class Entity
 {
-    public int Id { get; protected set; } = id;
+    public int Id { get; set; }
 }

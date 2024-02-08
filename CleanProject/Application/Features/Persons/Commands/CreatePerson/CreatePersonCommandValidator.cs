@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Application.Features.Persons.Commands.CreatePerson;
 
-public class CreatePersonCommandValidator : AbstractValidator<CreatePersonDto>
+internal class CreatePersonCommandValidator : AbstractValidator<CreatePersonDto>
 {
     public CreatePersonCommandValidator()
     {

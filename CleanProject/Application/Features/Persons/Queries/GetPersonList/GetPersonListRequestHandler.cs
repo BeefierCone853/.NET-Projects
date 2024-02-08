@@ -7,7 +7,7 @@ namespace Application.Features.Persons.Queries.GetPersonList;
 
 public class GetPersonListRequestHandler(
     IPersonRepository personRepository,
-    IMapperBase mapper)
+    IMapper mapper)
     : IRequestHandler<GetPersonListRequest, List<PersonDto>>
 {
     public async Task<List<PersonDto>> Handle(GetPersonListRequest request, CancellationToken cancellationToken)
