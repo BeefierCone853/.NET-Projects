@@ -7,7 +7,7 @@ namespace Application.Features.Persons.Commands.UpdatePerson;
 
 internal sealed class UpdatePersonCommandHandler(
     IPersonRepository personRepository,
-    IMapper mapper) : IRequestHandler<UpdatePersonCommand, Unit>
+    IMapper mapper)
 {
     public async Task<Unit> Handle(UpdatePersonCommand request, CancellationToken cancellationToken)
     {

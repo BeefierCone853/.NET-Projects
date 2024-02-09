@@ -1,19 +1,15 @@
-using Microsoft.Net.Http.Headers;
 using MVC.Abstractions;
+using MVC.Profiles;
 using MVC.Services;
+using MVC.Services.Base;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddHttpClient("BaseClient", client =>
-{
-    client.BaseAddress = new Uri("https://localhost:44342");
-    client.DefaultRequestHeaders.Add(
-        HeaderNames.Accept, "application/cleanproject");
-    client.DefaultRequestHeaders.Add(
-        HeaderNames.UserAgent, "HttpCleanProjectFactory");
-});
+builder.Services.AddHttpClient<IClient, Client>(cl => cl.BaseAddress = new Uri("http://localhost:5056"));
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddScoped<IPersonService, PersonService>();
 builder.Services.AddSingleton<ILocalStorageService, LocalStorageService>();
 
 var app = builder.Build();

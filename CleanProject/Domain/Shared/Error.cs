@@ -4,6 +4,7 @@ public class Error(string code, string message) : IEquatable<Error>
 {
     public static readonly Error None = new(string.Empty, string.Empty);
     public static readonly Error NullValue = new("Error.NullValue", "The specified result value is null.");
+    public static readonly Error NotFound = new("Error.NotFound", "The requested object couldn't be found.");
 
     public string Code { get; } = code;
 

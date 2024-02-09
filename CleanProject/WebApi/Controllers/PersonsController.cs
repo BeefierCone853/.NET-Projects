@@ -4,6 +4,7 @@ using Application.Features.Persons.Commands.DeletePerson;
 using Application.Features.Persons.Commands.UpdatePerson;
 using Application.Features.Persons.Queries.GetPersonDetail;
 using Application.Features.Persons.Queries.GetPersonList;
+using Domain.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,7 +34,9 @@ namespace WebApi.Controllers
 
         // POST api/<PersonsController>
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] CreatePersonDto person)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult<Result>> Post([FromBody] CreatePersonDto person)
         {
             var command = new CreatePersonCommand(person);
             var response = await mediator.Send(command);
@@ -51,11 +54,18 @@ namespace WebApi.Controllers
 
         // DELETE api/<PersonsController>/5
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult> Delete(int id)
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult<Result>> Delete(int id)
         {
             var command = new DeletePersonCommand(id);
-            await mediator.Send(command);
-            return NoContent();
+            var response = await mediator.Send(command);
+            if (response.Error.Code.Equals("Error.NotFound"))
+            {
+                return NotFound(response);
+            }
+
+            return Ok(response);
         }
     }
 }
