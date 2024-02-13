@@ -4,7 +4,8 @@ using Persistence.Repositories.Generic;
 
 namespace Persistence.Repositories;
 
-public class BlogPostRepository(ApplicationDbContext dbContext) : GenericRepository<BlogPost>(dbContext), IBlogPostRepository
+internal class BlogPostRepository(ApplicationDbContext dbContext)
+    : GenericRepository<BlogPost>(dbContext), IBlogPostRepository
 {
     public async Task<bool> Exists(int id)
     {

@@ -1,21 +1,17 @@
 using Application;
 using Infrastructure;
 using Persistence;
-using Presentation;
+using WebApi.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services
     .AddApplication()
     .AddInfrastructure()
-    .AddPersistence(builder.Configuration)
-    .AddPresentation();
+    .AddPersistence(builder.Configuration);
 builder.Services.AddCors(o =>
 {
     o.AddPolicy(
@@ -24,6 +20,8 @@ builder.Services.AddCors(o =>
             .AllowAnyHeader()
             .AllowAnyMethod());
 });
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
@@ -37,6 +35,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseExceptionHandler();
 
 app.MapControllers();
 

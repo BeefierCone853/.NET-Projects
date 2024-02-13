@@ -1,36 +1,36 @@
+using Domain.Primitives;
 using Domain.Repositories.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repositories.Generic;
 
-public class GenericRepository<T>(ApplicationDbContext dbContext) : IGenericRepository<T> where T : class
+internal abstract class GenericRepository<TEntity>(ApplicationDbContext dbContext) : IGenericRepository<TEntity>
+    where TEntity : Entity
 {
-    public async Task<T?> GetById(int id)
+    protected readonly ApplicationDbContext DbContext = dbContext;
+
+    public virtual async Task<TEntity?> GetById(int id)
     {
-        return await dbContext.Set<T>().FindAsync(id);
+        return await DbContext.Set<TEntity>().FindAsync(id);
     }
 
-    public async Task<IReadOnlyList<T>> GetAll()
+    public async Task<IReadOnlyList<TEntity>> GetAll()
     {
-        return await dbContext.Set<T>().ToListAsync();
+        return await DbContext.Set<TEntity>().ToListAsync();
     }
 
-    public async Task<T> Add(T entity)
+    public void Add(TEntity entity)
     {
-        await dbContext.AddAsync(entity);
-        await dbContext.SaveChangesAsync();
-        return entity;
+        DbContext.Set<TEntity>().Add(entity);
     }
 
-    public async Task Update(T entity)
+    public void Update(TEntity entity)
     {
-        dbContext.Entry(entity).State = EntityState.Modified;
-        await dbContext.SaveChangesAsync();
+        DbContext.Set<TEntity>().Update(entity);
     }
 
-    public async Task Delete(T entity)
+    public void Delete(TEntity entity)
     {
-        dbContext.Set<T>().Remove(entity);
-        await dbContext.SaveChangesAsync();
+        DbContext.Set<TEntity>().Remove(entity);
     }
 }

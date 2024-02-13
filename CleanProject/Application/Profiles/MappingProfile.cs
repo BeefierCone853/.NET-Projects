@@ -4,7 +4,7 @@ using Domain.Entities;
 
 namespace Application.Profiles;
 
-public class MappingProfile : Profile
+internal sealed class MappingProfile : Profile
 {
     public MappingProfile()
     {

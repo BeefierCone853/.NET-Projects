@@ -1,10 +1,12 @@
+using Domain.Primitives;
+
 namespace Domain.Repositories.Generic;
 
-public interface IGenericRepository<T> where T : class
+public interface IGenericRepository<TEntity> where TEntity : Entity
 {
-    Task<T?> GetById(int id);
-    Task<IReadOnlyList<T>> GetAll();
-    Task<T> Add(T entity);
-    Task Update(T entity);
-    Task Delete(T entity);
+    Task<TEntity?> GetById(int id);
+    Task<IReadOnlyList<TEntity>> GetAll();
+    void Add(TEntity entity);
+    void Update(TEntity entity);
+    void Delete(TEntity entity);
 }
