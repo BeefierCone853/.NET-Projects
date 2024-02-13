@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MVC.Abstractions;
+using MVC.Models;
 
 namespace MVC.Controllers;
 
@@ -11,25 +12,42 @@ public class PersonController(IPersonService personService) : Controller
         var model = await personService.GetPersons();
         return View(model);
     }
-    
+
     // GET: PersonController/Details/5
-    public async Task<ActionResult> Details()
+    public async Task<ActionResult> Details(int id)
     {
-        return View();
+        var model = await personService.GetPersonDetails(id);
+        return View(model);
     }
-    
+
     // POST: PersonController/Details/5
-    public async Task<ActionResult> Create()
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> Create(PersonViewModel person)
     {
-        return View();
+        try
+        {
+            var response = await personService.CreatePerson(person);
+            if (response.Success)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            ModelState.AddModelError("", response.ValidationErrors);
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError("", ex.Message);
+        }
+        return View(person);
     }
-    
+
     // PUT: PersonController/Details/5
-    public async Task<ActionResult> Edit()
+    public async Task<ActionResult> Edit(int id)
     {
-        return View();
+        var model = await personService.GetPersonDetails(id);
+        return View(model);
     }
-    
+
     // DELETE: PersonController/Details/5
     public async Task<ActionResult> Delete()
     {

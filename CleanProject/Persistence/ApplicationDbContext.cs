@@ -10,5 +10,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
 
-    public DbSet<Person> Persons { get; set; }
+    public DbSet<BlogPost> BlogPosts { get; set; }
 }

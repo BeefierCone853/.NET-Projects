@@ -1,4 +1,4 @@
-using Application.DTOs.Persons;
+using Application.DTOs.BlogPosts;
 using AutoMapper;
 using Domain.Entities;
 
@@ -8,7 +8,8 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<Person, PersonDto>().ReverseMap();
-        CreateMap<Person, CreatePersonDto>().ReverseMap();
+        CreateMap<BlogPost, BlogPostDto>().ReverseMap();
+        CreateMap<BlogPost, CreateBlogPostDto>().ReverseMap();
+        CreateMap<BlogPost, UpdateBlogPostDto>().ReverseMap();
     }
 }

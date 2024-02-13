@@ -4,11 +4,11 @@ using Persistence.Repositories.Generic;
 
 namespace Persistence.Repositories;
 
-public class PersonRepository(ApplicationDbContext dbContext) : GenericRepository<Person>(dbContext), IPersonRepository
+public class BlogPostRepository(ApplicationDbContext dbContext) : GenericRepository<BlogPost>(dbContext), IBlogPostRepository
 {
     public async Task<bool> Exists(int id)
     {
-        var entity = await Get(id);
+        var entity = await GetById(id);
         return entity != null;
     }
 }

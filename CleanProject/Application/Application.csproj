@@ -16,4 +16,10 @@
       <PackageReference Include="MediatR" Version="12.2.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Features\BlogPosts\Commands\DeleteBlogPost\" />
+      <Folder Include="Features\BlogPosts\Commands\UpdateBlogPost\" />
+      <Folder Include="Features\BlogPosts\Queries\GetBlogPostList\" />
+    </ItemGroup>
+
 </Project>

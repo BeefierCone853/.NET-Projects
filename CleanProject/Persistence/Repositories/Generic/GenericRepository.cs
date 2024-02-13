@@ -5,7 +5,7 @@ namespace Persistence.Repositories.Generic;
 
 public class GenericRepository<T>(ApplicationDbContext dbContext) : IGenericRepository<T> where T : class
 {
-    public async Task<T?> Get(int id)
+    public async Task<T?> GetById(int id)
     {
         return await dbContext.Set<T>().FindAsync(id);
     }

@@ -18,7 +18,7 @@ public static class DependencyInjection
             options.UseSqlServer(
                 configuration.GetConnectionString("CleanProjectConnectionString")));
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-        services.AddScoped<IPersonRepository, PersonRepository>();
+        services.AddScoped<IBlogPostRepository, BlogPostRepository>();
         return services;
     }
 }

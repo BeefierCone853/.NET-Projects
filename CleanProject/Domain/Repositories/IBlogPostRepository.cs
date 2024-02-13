@@ -3,7 +3,7 @@ using Domain.Repositories.Generic;
 
 namespace Domain.Repositories;
 
-public interface IPersonRepository : IGenericRepository<Person>
+public interface IBlogPostRepository : IGenericRepository<BlogPost>
 {
     Task<bool> Exists(int id);
 }
