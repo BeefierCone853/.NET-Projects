@@ -35,13 +35,13 @@ public class GlobalExceptionHandler : IExceptionHandler
         {
             CustomValidationException validationException => new ExceptionDetails(
                 StatusCodes.Status400BadRequest,
-                "https://datatracker.ietf.org/doc/html/rfc9110",
+                "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1",
                 "ValidationError",
                 "One or more validation errors has occured",
                 validationException.Errors),
             _ => new ExceptionDetails(
                 StatusCodes.Status500InternalServerError,
-                "https://datatracker.ietf.org/doc/html/rfc7321#section-6.6.1",
+                "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
                 "Server error",
                 "An unexpected error has occured",
                 null)

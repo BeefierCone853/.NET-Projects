@@ -1,0 +1,31 @@
+version: '3.4'
+
+services:
+  webapi:
+    image: ${DOCKER_REGISTRY-}webapi
+    container_name: CleanProject.Api
+    build:
+      context: .
+      dockerfile: WebApi/Dockerfile
+    ports:
+      - "5001:443"
+  
+  cleanproject-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: CleanProject.Db
+    volumes:
+      - ./.containers/database:/var/opt/mssql/data
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Strong_password_123!"
+
+  cleanproject-seq:
+    image: datalust/seq:latest
+    container_name: CleanProject.seq
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - "5431:5431"
+      - "8081:80"

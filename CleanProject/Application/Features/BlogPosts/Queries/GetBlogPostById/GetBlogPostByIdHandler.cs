@@ -16,9 +16,7 @@ internal sealed class GetBlogPostByIdHandler(
         var blogPost = await blogPostRepository.GetById(request.Id);
         if (blogPost is null)
         {
-            return Result.Failure<BlogPostDto>(new Error(
-                "BlogPost.NotFound",
-                $"The blog post with Id {request.Id} was not found."));
+            return Result.Failure<BlogPostDto>(BlogPostsErrors.NotFound(request.Id));
         }
 
         var response = mapper.Map<BlogPostDto>(blogPost);

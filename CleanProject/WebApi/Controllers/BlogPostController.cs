@@ -20,6 +20,7 @@ public class BlogPostController(ISender sender) : ApiController(sender)
         return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
     }
 
+    // POST api/<BlogPostController>
     [HttpPost]
     public async Task<IActionResult> CreateBlogPost(
         CreateBlogPostDto createBlogPostDto,
