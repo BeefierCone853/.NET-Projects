@@ -6,7 +6,7 @@ using Domain.Shared;
 
 namespace Application.Features.BlogPosts.Queries.GetBlogPostById;
 
-internal sealed class GetBlogPostByIdHandler(
+internal sealed class GetBlogPostByIdQueryHandler(
     IBlogPostRepository blogPostRepository,
     IMapper mapper)
     : IQueryHandler<GetBlogPostByIdQuery, BlogPostDto>

@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Features.BlogPosts.Commands.CreateBlogPost;
 
-public class CreateBlogPostCommandValidator : AbstractValidator<CreateBlogPostCommand>
+internal sealed class CreateBlogPostCommandValidator : AbstractValidator<CreateBlogPostCommand>
 {
     public CreateBlogPostCommandValidator()
     {
