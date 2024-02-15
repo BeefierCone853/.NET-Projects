@@ -8,7 +8,8 @@ services:
       context: .
       dockerfile: WebApi/Dockerfile
     ports:
-      - "5001:443"
+      - "9000:8080"
+      - "9001:8081"
   
   cleanproject-db:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -27,5 +28,5 @@ services:
     environment:
       - ACCEPT_EULA=Y
     ports:
-      - "5431:5431"
-      - "8081:80"
+      - "5341:5341"
+      - "80:80"
