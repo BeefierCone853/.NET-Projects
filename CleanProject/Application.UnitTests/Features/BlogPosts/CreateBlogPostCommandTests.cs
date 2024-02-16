@@ -11,7 +11,9 @@ namespace Application.UnitTests.Features.BlogPosts;
 
 public class CreateBlogPostCommandTests
 {
-    private static readonly CreateBlogPostDto BlogPostDto = new("This is a title", "This is a description");
+    private static readonly CreateBlogPostDto BlogPostDto = new(
+        "This is a title", 
+        "This is a description");
     private static readonly CreateBlogPostCommand Command = new(BlogPostDto);
     private readonly CreateBlogPostCommandHandler _handler;
     private readonly IBlogPostRepository _blogPostRepositoryMock;
