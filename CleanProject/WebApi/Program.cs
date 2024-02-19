@@ -2,6 +2,7 @@ using Application;
 using Infrastructure;
 using Persistence;
 using Serilog;
+using WebApi.Extensions;
 using WebApi.Infrastructure;
 using WebApi.Middleware;
 
@@ -34,6 +35,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();

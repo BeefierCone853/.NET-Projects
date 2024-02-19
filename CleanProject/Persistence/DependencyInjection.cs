@@ -13,8 +13,8 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(
-                configuration.GetConnectionString("CleanProjectConnectionString")));
+            options.UseNpgsql(
+                configuration.GetConnectionString("PostgreSQL")));
         services.AddScoped<IBlogPostRepository, BlogPostRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         return services;

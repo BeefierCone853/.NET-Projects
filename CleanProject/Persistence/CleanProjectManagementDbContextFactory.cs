@@ -13,8 +13,8 @@ public class CleanProjectManagementDbContextFactory : IDesignTimeDbContextFactor
             .AddJsonFile("appsettings.json")
             .Build();
         var builder = new DbContextOptionsBuilder<ApplicationDbContext>();
-        var connectionString = configuration.GetConnectionString("CleanProjectConnectionString");
-        builder.UseSqlServer(connectionString);
+        var connectionString = configuration.GetConnectionString("PostgreSQL");
+        builder.UseNpgsql(connectionString);
         return new ApplicationDbContext(builder.Options);
     }
 }
