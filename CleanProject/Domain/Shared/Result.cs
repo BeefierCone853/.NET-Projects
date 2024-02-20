@@ -113,4 +113,7 @@ public class Result<TValue> : Result
     /// <returns>Successful result with the value or a failure result if the value is null.</returns>
     public static implicit operator Result<TValue>(TValue? value) =>
         value is not null ? Success(value) : Failure<TValue>(Error.NullValue);
+
+    public static Result<TValue> ValidationFailure(Error error) =>
+        new(default, false, error);
 }

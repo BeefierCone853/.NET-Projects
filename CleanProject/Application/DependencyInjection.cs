@@ -14,10 +14,10 @@ public static class DependencyInjection
             {
                 configuration.RegisterServicesFromAssembly(assembly);
                 configuration.AddOpenBehavior(typeof(RequestLoggingPipelineBehavior<,>));
-                configuration.AddOpenBehavior(typeof(ValidationBehavior<,>));
+                configuration.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
             }
         );
-        services.AddValidatorsFromAssembly(assembly);
+        services.AddValidatorsFromAssembly(assembly, includeInternalTypes: true);
         services.AddAutoMapper(typeof(MappingProfile));
         return services;
     }

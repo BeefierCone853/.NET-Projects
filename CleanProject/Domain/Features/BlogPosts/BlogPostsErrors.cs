@@ -1,7 +1,6 @@
-using System.Runtime.InteropServices.JavaScript;
 using Domain.Shared;
 
-namespace Application.Features.BlogPosts;
+namespace Domain.Features.BlogPosts;
 
 public static class BlogPostsErrors
 {

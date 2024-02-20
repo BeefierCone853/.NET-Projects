@@ -24,9 +24,7 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
         {
             services.RemoveAll(typeof(DbContextOptions<ApplicationDbContext>));
             services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseNpgsql(_dbContainer.GetConnectionString());
-            });
+                options.UseNpgsql(_dbContainer.GetConnectionString()));
         });
     }
 

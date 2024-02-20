@@ -3,7 +3,7 @@ namespace Domain.Shared;
 /// <summary>
 /// Represents a standard error.
 /// </summary>
-public sealed record Error
+public record Error
 {
     /// <summary>
     /// Creates a failure error with an empty code and description strings.
@@ -18,14 +18,14 @@ public sealed record Error
         "Error.NullValue",
         "The specified result value is null.",
         ErrorType.Failure);
-    
+
     /// <summary>
     /// Instantiates an error record. 
     /// </summary>
     /// <param name="code">Code for the error.</param>
     /// <param name="description">Description of the error.</param>
     /// <param name="errorType">Type of the error.</param>
-    private Error(string code, string description, ErrorType errorType)
+    public Error(string code, string description, ErrorType errorType)
     {
         Code = code;
         Description = description;
@@ -36,12 +36,12 @@ public sealed record Error
     /// Code for the error.
     /// </summary>
     public string Code { get; }
-    
+
     /// <summary>
     /// Description of the error.
     /// </summary>
     public string Description { get; }
-    
+
     /// <summary>
     /// Type of the error.
     /// </summary>
@@ -82,15 +82,4 @@ public sealed record Error
     /// <returns>A conflict error with <see cref="ErrorType.Conflict"/> type.</returns>
     public static Error Conflict(string code, string description) =>
         new(code, description, ErrorType.Conflict);
-}
-
-/// <summary>
-/// Defines an enum for error types.
-/// </summary>
-public enum ErrorType
-{
-    Failure = 0,
-    Validation = 1,
-    NotFound = 2,
-    Conflict = 3
 }

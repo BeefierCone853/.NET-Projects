@@ -1,6 +1,7 @@
 using Application.Abstractions.Messaging;
 using Application.DTOs.BlogPosts;
 using AutoMapper;
+using Domain.Features.BlogPosts;
 using Domain.Repositories;
 using Domain.Shared;
 

@@ -1,4 +1,4 @@
-namespace Application.Exceptions;
+﻿namespace Application.Exceptions;
 
 public sealed class CustomValidationException(IReadOnlyCollection<ValidationError> errors)
     : Exception("Validation failed")

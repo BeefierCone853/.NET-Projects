@@ -1,3 +1,4 @@
+using System.Reflection;
 using Application.Abstractions.Messaging;
 using Application.Exceptions;
 using FluentValidation;
@@ -5,7 +6,8 @@ using MediatR;
 
 namespace Application.Abstractions.Behaviors;
 
-internal class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
+internal sealed class ValidationPipelineBehavior<TRequest, TResponse>(
+    IEnumerable<IValidator<TRequest>> validators)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : ICommandBase
 {
