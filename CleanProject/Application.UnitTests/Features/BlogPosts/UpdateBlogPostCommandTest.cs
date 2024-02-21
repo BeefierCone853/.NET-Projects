@@ -1,4 +1,5 @@
-﻿using Application.Features.BlogPosts.Commands.DeleteBlogPost;
+﻿using Application.Features.BlogPosts.Commands.UpdateBlogPost;
+using Application.Features.BlogPosts.DTOs;
 using Domain.Entities;
 using Domain.Features.BlogPosts;
 using Domain.Repositories;
@@ -9,33 +10,37 @@ using NSubstitute.ReturnsExtensions;
 
 namespace Application.UnitTests.Features.BlogPosts;
 
-public class DeleteBlogPostCommandTest
+public class UpdateBlogPostCommandTest
 {
     private const int Id = 1;
+    private const string Title = "This is a title";
+    private const string Description = "This is a description";
+
+    private static readonly UpdateBlogPostDto BlogPostDto = new(Title, Description);
 
     private static readonly BlogPost BlogPost = new()
     {
-        Title = "This is a title",
-        Description = "This is a description",
+        Title = Title,
+        Description = Description,
         Id = Id
     };
 
-    private static readonly DeleteBlogPostCommand Command = new(Id);
-    private readonly DeleteBlogPostCommandHandler _handler;
+    private static readonly UpdateBlogPostCommand Command = new(BlogPostDto, Id);
+    private readonly UpdateBlogPostCommandHandler _handler;
     private readonly IBlogPostRepository _blogPostRepositoryMock;
     private readonly IUnitOfWork _unitOfWorkMock;
 
-    public DeleteBlogPostCommandTest()
+    public UpdateBlogPostCommandTest()
     {
         _blogPostRepositoryMock = Substitute.For<IBlogPostRepository>();
         _unitOfWorkMock = Substitute.For<IUnitOfWork>();
-        _handler = new DeleteBlogPostCommandHandler(
+        _handler = new UpdateBlogPostCommandHandler(
             _blogPostRepositoryMock,
             _unitOfWorkMock);
     }
 
     [Fact]
-    public async Task Handle_Should_ReturnSuccess_WhenEntityExists()
+    public async Task Handle_Should_ReturnSuccess()
     {
         // Arrange
         _blogPostRepositoryMock.GetById(Id).Returns(BlogPost);
@@ -57,7 +62,7 @@ public class DeleteBlogPostCommandTest
         Result result = await _handler.Handle(Command, default);
 
         // Assert
-        result.IsSuccess.Should().BeFalse();
+        result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(BlogPostsErrors.NotFound(Id));
     }
 
@@ -68,11 +73,11 @@ public class DeleteBlogPostCommandTest
         await _handler.Handle(Command, default);
 
         // Assert
-        await _blogPostRepositoryMock.Received(1).GetById(Arg.Is(Command.BlogPostId));
+        await _blogPostRepositoryMock.Received(1).GetById(Arg.Is(Command.Id));
     }
 
     [Fact]
-    public async Task Handle_Should_CallRepositoryGetByIdAndDelete()
+    public async Task Handle_Should_CallRepositoryGetByIdAndUpdate()
     {
         // Arrange
         _blogPostRepositoryMock.GetById(Id).Returns(BlogPost);
@@ -81,8 +86,8 @@ public class DeleteBlogPostCommandTest
         await _handler.Handle(Command, default);
 
         // Assert
-        await _blogPostRepositoryMock.Received(1).GetById(Arg.Is(Command.BlogPostId));
-        _blogPostRepositoryMock.Received(1).Delete(Arg.Is(BlogPost));
+        await _blogPostRepositoryMock.Received(1).GetById(Arg.Is(Command.Id));
+        _blogPostRepositoryMock.Received(1).Update(Arg.Is(BlogPost));
     }
 
     [Fact]

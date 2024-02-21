@@ -53,6 +53,20 @@ public class CreateBlogPostCommandTests
     }
 
     [Fact]
+    public async Task Handle_Should_ReturnId_WhenUserIsCreated()
+    {
+        // Arrange
+        _mapperMock.Map<BlogPost>(BlogPostDto).Returns(BlogPost);
+        _blogPostRepositoryMock.Add(BlogPost);
+
+        // Act
+        var result = await _handler.Handle(Command, default);
+
+        // Assert
+        result.Value.Should().Be(5);
+    }
+
+    [Fact]
     public async Task Handle_Should_CallUnitOfWork()
     {
         // Arrange
@@ -89,19 +103,5 @@ public class CreateBlogPostCommandTests
 
         // Assert
         _mapperMock.Received(1).Map<BlogPost>(BlogPostDto);
-    }
-    
-    [Fact]
-    public async Task Handle_Should_ReturnId_WhenUserIsCreated()
-    {
-        // Arrange
-        _mapperMock.Map<BlogPost>(BlogPostDto).Returns(BlogPost);
-        _blogPostRepositoryMock.Add(BlogPost);
-
-        // Act
-        var result = await _handler.Handle(Command, default);
-
-        // Assert
-        result.Value.Should().Be(5);
     }
 }
