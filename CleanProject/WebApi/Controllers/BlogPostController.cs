@@ -1,5 +1,6 @@
 using Application.Features.BlogPosts.Commands.CreateBlogPost;
 using Application.Features.BlogPosts.Commands.DeleteBlogPost;
+using Application.Features.BlogPosts.Commands.UpdateBlogPost;
 using Application.Features.BlogPosts.DTOs;
 using Application.Features.BlogPosts.Queries.GetBlogPostById;
 using MediatR;
@@ -34,6 +35,20 @@ public class BlogPostController(ISender sender) : ApiController(sender)
         var command = new CreateBlogPostCommand(createBlogPostDto);
         var result = await Sender.Send(command, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+    }
+
+    // PUT api/<BlogPostController>/5
+    [HttpPut("{id:int}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> UpdateBlogPost(
+        [FromBody] UpdateBlogPostDto updateBlogPostDto,
+        [FromRoute] int id,
+        CancellationToken cancellationToken)
+    {
+        var command = new UpdateBlogPostCommand(updateBlogPostDto, id);
+        var result = await Sender.Send(command, cancellationToken);
+        return result.IsSuccess ? NoContent() : NotFound(result.Error);
     }
 
     // DELETE api/<BlogPostController>/5
