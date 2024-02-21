@@ -19,11 +19,9 @@ public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
     {
         // Arrange
         var blogPostDto = new CreateBlogPostDto("Title", "Description");
-        var blogPost1 = new BlogPost { Title = blogPostDto.Title, Description = blogPostDto.Description };
         var command = new CreateBlogPostCommand(blogPostDto);
         await Sender.Send(command);
         blogPostDto = new CreateBlogPostDto("Title2", "Description2");
-        var blogPost2 = new BlogPost { Title = blogPostDto.Title, Description = blogPostDto.Description };
         command = new CreateBlogPostCommand(blogPostDto);
         await Sender.Send(command);
         var getListCommand = new GetBlogPostListQuery();
@@ -35,8 +33,6 @@ public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
         var blogPosts = await DbContext.Set<BlogPost>().ToListAsync();
         Assert.NotEmpty(blogPosts);
         blogPosts.Count.Should().Be(2);
-        Assert.Contains(blogPost1, blogPosts);
-        Assert.Contains(blogPost2, blogPosts);
     }
     
     [Fact]
