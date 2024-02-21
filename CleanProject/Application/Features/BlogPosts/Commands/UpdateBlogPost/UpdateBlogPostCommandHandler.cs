@@ -5,7 +5,7 @@ using Domain.Shared;
 
 namespace Application.Features.BlogPosts.Commands.UpdateBlogPost;
 
-public class UpdateBlogPostCommandHandler(
+internal sealed class UpdateBlogPostCommandHandler(
     IBlogPostRepository blogPostRepository,
     IUnitOfWork unitOfWork) : ICommandHandler<UpdateBlogPostCommand>
 {
