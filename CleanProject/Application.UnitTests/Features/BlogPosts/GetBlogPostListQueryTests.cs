@@ -10,12 +10,13 @@ namespace Application.UnitTests.Features.BlogPosts;
 
 public class GetBlogPostListQueryTests
 {
-    private static IReadOnlyList<BlogPost> BlogPostList =
+    private static readonly IReadOnlyList<BlogPost> BlogPostList =
     [
         new BlogPost { Title = "Title1", Description = "Title1", Id = 1 },
         new BlogPost { Title = "Title2", Description = "Title2", Id = 2 },
         new BlogPost { Title = "Title3", Description = "Title3", Id = 3 },
     ];
+
     private static readonly GetBlogPostListQuery Command = new();
     private readonly GetBlogPostListQueryHandler _handler;
     private readonly IBlogPostRepository _blogPostRepositoryMock;
@@ -31,16 +32,16 @@ public class GetBlogPostListQueryTests
     {
         // Arrange
         _blogPostRepositoryMock.GetAll().Returns(BlogPostList);
-        
+
         // Act
         Result<List<BlogPostDto>> result = await _handler.Handle(Command, default);
-        
+
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.As<Result<List<BlogPostDto>>>();
         result.Value.Count.Should().Be(3);
     }
-    
+
     [Fact]
     public async Task Handle_Should_CallRepository()
     {
