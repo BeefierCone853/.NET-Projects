@@ -26,7 +26,7 @@ public class DeleteBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunc
     }
 
     [Fact]
-    public async Task Should_ReturnNotFound_WhenBlogPostNotInDatabase()
+    public async Task Should_ReturnNotFound_WhenBlogPostIsNotInDatabase()
     {
         // Arrange
         const int id = 1;

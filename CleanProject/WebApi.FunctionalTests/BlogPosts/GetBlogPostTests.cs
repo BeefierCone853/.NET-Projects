@@ -27,7 +27,7 @@ public class GetBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunctio
     }
 
     [Fact]
-    public async Task Should_ReturnNotFound_WhenBlogPostNotInDatabase()
+    public async Task Should_ReturnNotFound_WhenBlogPostIsNotInDatabase()
     {
         // Act
         var response = await HttpClient.GetAsync("api/blogpost/1");
