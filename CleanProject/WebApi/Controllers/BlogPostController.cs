@@ -1,5 +1,6 @@
-using Application.DTOs.BlogPosts;
 using Application.Features.BlogPosts.Commands.CreateBlogPost;
+using Application.Features.BlogPosts.Commands.DeleteBlogPost;
+using Application.Features.BlogPosts.DTOs;
 using Application.Features.BlogPosts.Queries.GetBlogPostById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,8 @@ namespace WebApi.Controllers;
 public class BlogPostController(ISender sender) : ApiController(sender)
 {
     // GET api/<BlogPostController>/5
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetBlogPostById(int id, CancellationToken cancellationToken)
     {
@@ -22,12 +25,27 @@ public class BlogPostController(ISender sender) : ApiController(sender)
 
     // POST api/<BlogPostController>
     [HttpPost]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
     public async Task<IActionResult> CreateBlogPost(
         CreateBlogPostDto createBlogPostDto,
         CancellationToken cancellationToken)
     {
         var command = new CreateBlogPostCommand(createBlogPostDto);
         var result = await Sender.Send(command, cancellationToken);
-        return result.IsSuccess ? Ok() : BadRequest(result.Error);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+    }
+
+    // DELETE api/<BlogPostController>/5
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> DeleteBlogPost(
+        int id,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteBlogPostCommand(id);
+        var result = await Sender.Send(command, cancellationToken);
+        return result.IsSuccess ? NoContent() : NotFound(result.Error);
     }
 }

@@ -9,13 +9,13 @@ namespace Application.Features.BlogPosts.Commands.CreateBlogPost;
 internal sealed class CreateBlogPostCommandHandler(
     IBlogPostRepository blogPostRepository,
     IUnitOfWork unitOfWork,
-    IMapper mapper) : ICommandHandler<CreateBlogPostCommand>
+    IMapper mapper) : ICommandHandler<CreateBlogPostCommand, int>
 {
-    public async Task<Result> Handle(CreateBlogPostCommand request, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(CreateBlogPostCommand request, CancellationToken cancellationToken)
     {
         var blogPost = mapper.Map<BlogPost>(request.CreateBlogPostDto);
         blogPostRepository.Add(blogPost);
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return Result.Success();
+        return blogPost.Id;
     }
 }

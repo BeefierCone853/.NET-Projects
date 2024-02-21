@@ -1,5 +1,5 @@
 using Application.Abstractions.Messaging;
-using Application.DTOs.BlogPosts;
+using Application.Features.BlogPosts.DTOs;
 
 namespace Application.Features.BlogPosts.Queries.GetBlogPostById;
 

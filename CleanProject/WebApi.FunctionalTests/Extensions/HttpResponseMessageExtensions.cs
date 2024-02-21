@@ -20,4 +20,19 @@ internal static class HttpResponseMessageExtensions
         Ensure.NotNull(problemDetails);
         return problemDetails;
     }
+
+    internal static async Task<CustomDeleteProblemDetails> GetDeleteProblemDetails(
+        this HttpResponseMessage response)
+    {
+        if (response.IsSuccessStatusCode)
+        {
+            throw new InvalidOperationException("Successful response");
+        }
+
+        var problemDetails = await response
+            .Content
+            .ReadFromJsonAsync<CustomDeleteProblemDetails>();
+        Ensure.NotNull(problemDetails);
+        return problemDetails;
+    }
 }

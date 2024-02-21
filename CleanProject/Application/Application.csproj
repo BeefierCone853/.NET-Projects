@@ -25,7 +25,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Features\BlogPosts\Commands\DeleteBlogPost\" />
       <Folder Include="Features\BlogPosts\Commands\UpdateBlogPost\" />
       <Folder Include="Features\BlogPosts\Queries\GetBlogPostList\" />
     </ItemGroup>

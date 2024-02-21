@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using Application.DTOs.BlogPosts;
+using Application.Features.BlogPosts.DTOs;
 using FluentAssertions;
 using WebApi.FunctionalTests.Abstractions;
 using WebApi.FunctionalTests.Contracts;
@@ -8,7 +8,7 @@ using WebApi.FunctionalTests.Extensions;
 
 namespace WebApi.FunctionalTests.BlogPosts;
 
-public class CreateBlogPostTest(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
+public class CreateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
 {
     [Fact]
     public async Task Should_ReturnOk_WhenRequestIsValid()

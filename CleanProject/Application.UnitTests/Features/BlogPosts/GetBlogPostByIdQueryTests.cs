@@ -1,5 +1,4 @@
-﻿using Application.DTOs.BlogPosts;
-using Application.Features.BlogPosts;
+﻿using Application.Features.BlogPosts.DTOs;
 using Application.Features.BlogPosts.Queries.GetBlogPostById;
 using AutoMapper;
 using Domain.Entities;
@@ -17,7 +16,7 @@ public class GetBlogPostByIdQueryTests
     private const string Title = "This is the title";
     private const string Description = "This is the description";
     private static readonly GetBlogPostByIdQuery Command = new(1);
-    private static readonly BlogPostDto Dto = new(Title, Description, Command.Id);
+    private static readonly BlogPostDto BlogPostDto = new(Title, Description, Command.Id);
     private readonly BlogPost _blogPost = new();
     private readonly GetBlogPostByIdQueryHandler _handler;
     private readonly IBlogPostRepository _blogPostRepositoryMock;
@@ -40,7 +39,7 @@ public class GetBlogPostByIdQueryTests
     {
         // Arrange
         _blogPostRepositoryMock.GetById(Command.Id).Returns(_blogPost);
-        _mapperMock.Map<BlogPostDto>(_blogPost).Returns(Dto);
+        _mapperMock.Map<BlogPostDto>(_blogPost).Returns(BlogPostDto);
 
         // Act
         Result<BlogPostDto> result = await _handler.Handle(Command, default);
@@ -63,8 +62,8 @@ public class GetBlogPostByIdQueryTests
         Result result = await _handler.Handle(Command, default);
 
         // Assert
-        result.Error.Should().Be(BlogPostsErrors.NotFound(Command.Id));
         result.IsFailure.Should().BeTrue();
+        result.Error.Should().Be(BlogPostsErrors.NotFound(Command.Id));
     }
 
     [Fact]
