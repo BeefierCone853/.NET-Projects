@@ -25,7 +25,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Features\BlogPosts\Queries\GetBlogPostList\" />
       <Folder Include="Features\BlogPosts\Validators\" />
     </ItemGroup>
 

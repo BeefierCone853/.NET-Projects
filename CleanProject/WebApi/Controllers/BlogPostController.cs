@@ -3,6 +3,7 @@ using Application.Features.BlogPosts.Commands.DeleteBlogPost;
 using Application.Features.BlogPosts.Commands.UpdateBlogPost;
 using Application.Features.BlogPosts.DTOs;
 using Application.Features.BlogPosts.Queries.GetBlogPostById;
+using Application.Features.BlogPosts.Queries.GetBlogPostList;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Abstractions;
@@ -13,10 +14,20 @@ namespace WebApi.Controllers;
 [ApiController]
 public class BlogPostController(ISender sender) : ApiController(sender)
 {
+    // GET api/<BlogPostController>
+    [HttpGet]
+    [ProducesResponseType(200)]
+    public async Task<IActionResult> GetBlogPostList(CancellationToken cancellationToken)
+    {
+        var query = new GetBlogPostListQuery();
+        var result = await Sender.Send(query, cancellationToken);
+        return Ok(result.Value);
+    }
+
     // GET api/<BlogPostController>/5
+    [HttpGet("{id:int}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(404)]
-    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetBlogPostById(int id, CancellationToken cancellationToken)
     {
         var query = new GetBlogPostByIdQuery(id);
