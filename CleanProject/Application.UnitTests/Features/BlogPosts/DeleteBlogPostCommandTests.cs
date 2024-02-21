@@ -9,7 +9,7 @@ using NSubstitute.ReturnsExtensions;
 
 namespace Application.UnitTests.Features.BlogPosts;
 
-public class DeleteBlogPostCommandTest
+public class DeleteBlogPostCommandTests
 {
     private const int Id = 1;
 
@@ -25,7 +25,7 @@ public class DeleteBlogPostCommandTest
     private readonly IBlogPostRepository _blogPostRepositoryMock;
     private readonly IUnitOfWork _unitOfWorkMock;
 
-    public DeleteBlogPostCommandTest()
+    public DeleteBlogPostCommandTests()
     {
         _blogPostRepositoryMock = Substitute.For<IBlogPostRepository>();
         _unitOfWorkMock = Substitute.For<IUnitOfWork>();
