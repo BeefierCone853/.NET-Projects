@@ -5,8 +5,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Application;
 
+/// <summary>
+/// Used for injecting this project as a service.
+/// </summary>
 public static class DependencyInjection
 {
+    /// <summary>
+    /// Configures dependencies for the project and injects it as a service. 
+    /// </summary>
+    /// <param name="services">Service descriptor for this project.</param>
+    /// <returns></returns>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         var assembly = typeof(DependencyInjection).Assembly;

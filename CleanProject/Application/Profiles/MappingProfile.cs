@@ -4,8 +4,14 @@ using Domain.Entities;
 
 namespace Application.Profiles;
 
+/// <summary>
+/// Represents AutoMapper configuration.
+/// </summary>
 internal sealed class MappingProfile : Profile
 {
+    /// <summary>
+    /// Creates type mappings from the destination to the source types.
+    /// </summary>
     public MappingProfile()
     {
         CreateMap<BlogPost, BlogPostDto>().ReverseMap();

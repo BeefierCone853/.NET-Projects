@@ -3,17 +3,17 @@ using Domain.Primitives;
 namespace Domain.Entities;
 
 /// <summary>
-/// Entity which represents blog posts.
+/// Represents a blog post entity.
 /// </summary>
 public sealed class BlogPost : Entity
 {
     /// <summary>
-    /// Title of a blog post.
+    /// Title of the blog post.
     /// </summary>
     public string Title { get; set; }
 
     /// <summary>
-    /// Description of a blog post.
+    /// Description of the blog post.
     /// </summary>
     public string Description { get; set; }
 
