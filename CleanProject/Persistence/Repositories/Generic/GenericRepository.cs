@@ -4,9 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repositories.Generic;
 
+/// <inheritdoc cref="IGenericRepository{TEntity}"/>
+/// <param name="dbContext">Represents a session with the database.</param>
 internal abstract class GenericRepository<TEntity>(ApplicationDbContext dbContext) : IGenericRepository<TEntity>
     where TEntity : Entity
 {
+    /// <summary>
+    /// Represents a session with the database.
+    /// </summary>
     protected readonly ApplicationDbContext DbContext = dbContext;
 
     public virtual async Task<TEntity?> GetById(int id)

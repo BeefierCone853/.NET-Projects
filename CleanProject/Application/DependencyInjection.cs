@@ -14,7 +14,7 @@ public static class DependencyInjection
     /// Configures dependencies for the project and injects it as a service. 
     /// </summary>
     /// <param name="services">Service descriptor for this project.</param>
-    /// <returns></returns>
+    /// <returns>Configured services.</returns>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         var assembly = typeof(DependencyInjection).Assembly;

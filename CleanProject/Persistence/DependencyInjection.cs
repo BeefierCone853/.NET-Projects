@@ -6,8 +6,17 @@ using Persistence.Repositories;
 
 namespace Persistence;
 
+/// <summary>
+/// Used for injecting this project as a service.
+/// </summary>
 public static class DependencyInjection
 {
+    /// <summary>
+    /// Configures dependencies for the project and injects it as a service. 
+    /// </summary>
+    /// <param name="services">Service descriptor for this project.</param>
+    /// <param name="configuration">Application configuration properties.</param>
+    /// <returns>Configured services.</returns>
     public static IServiceCollection AddPersistence(
         this IServiceCollection services,
         IConfiguration configuration)

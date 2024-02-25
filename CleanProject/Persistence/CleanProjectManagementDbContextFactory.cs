@@ -4,8 +4,16 @@ using Microsoft.Extensions.Configuration;
 
 namespace Persistence;
 
+/// <summary>
+/// Factory for the database configuration.
+/// </summary>
 public class CleanProjectManagementDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
 {
+    /// <summary>
+    /// Configures the applications database context.
+    /// </summary>
+    /// <param name="args">Array of arguments.</param>
+    /// <returns>Configured database context.</returns>
     public ApplicationDbContext CreateDbContext(string[] args)
     {
         var configuration = new ConfigurationBuilder()
