@@ -1,8 +1,9 @@
 using Domain.Primitives;
 using Domain.Repositories.Generic;
+using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Persistence.Repositories.Generic;
+namespace Infrastructure.Repositories.Generic;
 
 /// <inheritdoc cref="IGenericRepository{TEntity}"/>
 /// <param name="dbContext">Represents a session with the database.</param>

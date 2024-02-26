@@ -1,4 +1,4 @@
-namespace Domain.Repositories;
+namespace Application.Abstractions.Data;
 
 /// <summary>
 /// Used to group multiple database-related operations into a single transaction.

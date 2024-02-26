@@ -1,4 +1,5 @@
-﻿using Application.Features.BlogPosts.Commands.DeleteBlogPost;
+﻿using Application.Abstractions.Data;
+using Application.Features.BlogPosts.Commands.DeleteBlogPost;
 using Domain.Entities;
 using Domain.Features.BlogPosts;
 using Domain.Repositories;

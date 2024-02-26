@@ -15,8 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services
     .AddApplication()
-    .AddInfrastructure()
-    .AddPersistence(builder.Configuration);
+    .AddInfrastructure(builder.Configuration);
 builder.Services.AddCors(o =>
 {
     o.AddPolicy(

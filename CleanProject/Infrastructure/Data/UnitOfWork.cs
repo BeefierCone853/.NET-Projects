@@ -1,6 +1,6 @@
-using Domain.Repositories;
+using Application.Abstractions.Data;
 
-namespace Persistence;
+namespace Infrastructure.Data;
 
 /// <inheritdoc cref="IUnitOfWork"/>
 /// <param name="dbContext">Represents a session with the database.</param>

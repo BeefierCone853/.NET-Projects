@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Infrastructure.Data;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Persistence;
 using Testcontainers.PostgreSql;
 
 namespace Application.IntegrationTests.Abstractions;
@@ -28,13 +28,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
         });
     }
 
-    public Task InitializeAsync()
-    {
-        return _dbContainer.StartAsync();
-    }
+    public Task InitializeAsync() => _dbContainer.StartAsync();
 
-    public new Task DisposeAsync()
-    {
-        return _dbContainer.StopAsync();
-    }
+    public new Task DisposeAsync() => _dbContainer.DisposeAsync().AsTask();
 }

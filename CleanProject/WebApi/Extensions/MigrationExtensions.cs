@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Persistence;
+﻿using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Extensions;
 

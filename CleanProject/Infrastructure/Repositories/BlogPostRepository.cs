@@ -1,8 +1,9 @@
 using Domain.Entities;
 using Domain.Repositories;
-using Persistence.Repositories.Generic;
+using Infrastructure.Data;
+using Infrastructure.Repositories.Generic;
 
-namespace Persistence.Repositories;
+namespace Infrastructure.Repositories;
 
 /// <inheritdoc cref="IBlogPostRepository"/>
 /// <param name="dbContext">Represents a session with the database.</param>
