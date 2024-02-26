@@ -4,8 +4,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Infrastructure;
 
+/// <summary>
+/// Handles uncaught exceptions throughout the application.
+/// </summary>
 public class GlobalExceptionHandler : IExceptionHandler
 {
+    /// <summary>
+    /// Handles uncaught exceptions and creates a response containing details about the error.
+    /// </summary>
+    /// <param name="httpContext">Encapsulates all HTTP-specific information about an individual HTTP request.</param>
+    /// <param name="exception">Unhandled exception.</param>
+    /// <param name="cancellationToken">Signals if a task or operation should be cancelled.</param>
+    /// <returns>Result of the operation.</returns>
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
         Exception exception,
@@ -29,6 +39,11 @@ public class GlobalExceptionHandler : IExceptionHandler
         return true;
     }
 
+    /// <summary>
+    /// Creates a <see cref="ExceptionDetails"/> object based on the exception type.
+    /// </summary>
+    /// <param name="exception">Uncaught exception.</param>
+    /// <returns>An <see cref="ExceptionDetails"/> object containing validation or server errors based on the exception type.</returns>
     private static ExceptionDetails GetExceptionDetails(Exception exception)
     {
         return exception switch
@@ -48,6 +63,14 @@ public class GlobalExceptionHandler : IExceptionHandler
         };
     }
 
+    /// <summary>
+    /// Represents the exception details that can contain multiple errors with their detailed information.
+    /// </summary>
+    /// <param name="Status">Status of the error.</param>
+    /// <param name="Type">Type of the error.</param>
+    /// <param name="Title">Title of the error.</param>
+    /// <param name="Detail">Additional information of the error.</param>
+    /// <param name="Errors">List of errors.</param>
     private record ExceptionDetails(
         int Status,
         string Type,
