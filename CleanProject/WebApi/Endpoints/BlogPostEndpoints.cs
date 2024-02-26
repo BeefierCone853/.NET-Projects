@@ -7,8 +7,10 @@ using Application.Features.BlogPosts.Queries.GetBlogPostList;
 using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Extensions;
+using WebApi.Infrastructure;
 
-namespace WebApi.Controllers;
+namespace WebApi.Endpoints;
 
 /// <summary>
 /// Endpoint for handling BlogPost CRUD operations.
@@ -41,7 +43,7 @@ public class BlogPostEndpoints : ICarterModule
     {
         var query = new GetBlogPostListQuery();
         var result = await sender.Send(query, cancellationToken);
-        return Results.Ok(result.Value);
+        return result.Match(Results.Ok, CustomResults.Problem);
     }
 
     /// <summary>
@@ -58,7 +60,7 @@ public class BlogPostEndpoints : ICarterModule
     {
         var query = new GetBlogPostByIdQuery(id);
         var result = await sender.Send(query, cancellationToken);
-        return result.IsSuccess ? Results.Ok(result.Value) : Results.NotFound(result.Error);
+        return result.Match(Results.Ok, CustomResults.Problem);
     }
 
     /// <summary>
@@ -75,7 +77,7 @@ public class BlogPostEndpoints : ICarterModule
     {
         var command = new CreateBlogPostCommand(createBlogPostDto);
         var result = await sender.Send(command, cancellationToken);
-        return result.IsSuccess ? Results.Ok(result.Value) : Results.BadRequest(result.Error);
+        return result.Match(Results.Ok, CustomResults.Problem);
     }
 
     /// <summary>
@@ -94,7 +96,7 @@ public class BlogPostEndpoints : ICarterModule
     {
         var command = new UpdateBlogPostCommand(updateBlogPostDto, id);
         var result = await sender.Send(command, cancellationToken);
-        return result.IsSuccess ? Results.NoContent() : Results.NotFound(result.Error);
+        return result.Match(Results.NoContent, CustomResults.Problem);
     }
 
     /// <summary>
@@ -111,6 +113,6 @@ public class BlogPostEndpoints : ICarterModule
     {
         var command = new DeleteBlogPostCommand(id);
         var result = await sender.Send(command, cancellationToken);
-        return result.IsSuccess ? Results.NoContent() : Results.NotFound(result.Error);
+        return result.Match(Results.NoContent, CustomResults.Problem);
     }
 }

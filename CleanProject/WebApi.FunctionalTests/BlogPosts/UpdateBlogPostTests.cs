@@ -15,10 +15,10 @@ public class UpdateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunc
         const int id = 1;
         var updateRequest = new UpdateBlogPostDto("New title", "New description");
         var createRequest = new CreateBlogPostDto("This is the title", "This is the description");
-        await HttpClient.PostAsJsonAsync("api/blogpost", createRequest);
+        await HttpClient.PostAsJsonAsync(BlogPostEndpoint, createRequest);
 
         // Act
-        var response = await HttpClient.PutAsJsonAsync($"api/blogpost/{id}", updateRequest);
+        var response = await HttpClient.PutAsJsonAsync($"{BlogPostEndpoint}/{id}", updateRequest);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
@@ -32,7 +32,7 @@ public class UpdateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunc
         var request = new CreateBlogPostDto("This is the title", "This is the description");
 
         // Act
-        var response = await HttpClient.PutAsJsonAsync($"api/blogpost/{id}", request);
+        var response = await HttpClient.PutAsJsonAsync($"{BlogPostEndpoint}/{id}", request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);

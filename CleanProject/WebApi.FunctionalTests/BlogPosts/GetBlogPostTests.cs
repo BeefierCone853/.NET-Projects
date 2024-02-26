@@ -14,10 +14,10 @@ public class GetBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunctio
     {
         // Arrange
         var request = new CreateBlogPostDto("This is the title", "This is the description");
-        await HttpClient.PostAsJsonAsync("api/blogpost", request);
+        await HttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
 
         // Act
-        var response = await HttpClient.GetAsync("api/blogpost/1");
+        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}/1");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -30,7 +30,7 @@ public class GetBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunctio
     public async Task Should_ReturnNotFound_WhenBlogPostIsNotInDatabase()
     {
         // Act
-        var response = await HttpClient.GetAsync("api/blogpost/1");
+        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}/1");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);

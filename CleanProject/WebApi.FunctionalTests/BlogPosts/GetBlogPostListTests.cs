@@ -15,13 +15,13 @@ public class GetBlogPostListTests(FunctionalTestWebAppFactory factory) : BaseFun
         // Arrange
         var request = new CreateBlogPostDto("This is the title", "This is the description");
         var blogPost1 = new BlogPostDto(request.Title, request.Description, 1);
-        await HttpClient.PostAsJsonAsync("api/blogpost", request);
+        await HttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
         request = new CreateBlogPostDto("This is the title2", "This is the description2");
         var blogPost2 = new BlogPostDto(request.Title, request.Description, 2);
-        await HttpClient.PostAsJsonAsync("api/blogpost", request);
+        await HttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
 
         // Act
-        var response = await HttpClient.GetAsync("/api/BlogPost");
+        var response = await HttpClient.GetAsync(BlogPostEndpoint);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -38,7 +38,7 @@ public class GetBlogPostListTests(FunctionalTestWebAppFactory factory) : BaseFun
     public async Task Should_ReturnOk_WithEmptyList_WhenBlogPostTableIsEmpty()
     {
         // Act
-        var response = await HttpClient.GetAsync("/api/BlogPost");
+        var response = await HttpClient.GetAsync(BlogPostEndpoint);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

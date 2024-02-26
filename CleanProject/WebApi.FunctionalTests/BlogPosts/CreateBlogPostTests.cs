@@ -17,7 +17,7 @@ public class CreateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunc
         var request = new CreateBlogPostDto("This is the title", "This is the description");
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync("api/blogpost", request);
+        var response = await HttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -30,7 +30,7 @@ public class CreateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunc
         var request = new CreateBlogPostDto("", "This is the description");
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync("api/blogpost", request);
+        var response = await HttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
         CustomProblemDetails problemDetails = await response.GetProblemDetails();
         problemDetails.Errors
             .Select(error => error.PropertyName)
@@ -52,7 +52,7 @@ public class CreateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunc
         var request = new CreateBlogPostDto("This is the title", "");
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync("api/blogpost", request);
+        var response = await HttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -74,7 +74,7 @@ public class CreateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunc
         var request = new CreateBlogPostDto("", "");
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync("api/blogpost", request);
+        var response = await HttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
