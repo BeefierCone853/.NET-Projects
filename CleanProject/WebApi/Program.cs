@@ -1,6 +1,6 @@
 using Application;
+using Carter;
 using Infrastructure;
-using Persistence;
 using Serilog;
 using WebApi.Extensions;
 using WebApi.Infrastructure;
@@ -10,7 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, loggerConfig) =>
     loggerConfig.ReadFrom.Configuration(context.Configuration));
-builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services
@@ -24,6 +23,7 @@ builder.Services.AddCors(o =>
             .AllowAnyHeader()
             .AllowAnyMethod());
 });
+builder.Services.AddCarter();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
@@ -43,11 +43,9 @@ app.UseMiddleware<RequestLogContextMiddleware>();
 
 app.UseSerilogRequestLogging();
 
-app.UseAuthorization();
-
 app.UseExceptionHandler();
 
-app.MapControllers();
+app.MapCarter();
 
 app.UseCors("CorsPolicy");
 
