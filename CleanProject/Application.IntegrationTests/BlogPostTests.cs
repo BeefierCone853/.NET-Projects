@@ -1,4 +1,4 @@
-﻿using Application.Exceptions;
+﻿using Application.Features.BlogPosts;
 using Application.Features.BlogPosts.Commands.CreateBlogPost;
 using Application.Features.BlogPosts.Commands.DeleteBlogPost;
 using Application.Features.BlogPosts.Commands.UpdateBlogPost;
@@ -10,6 +10,7 @@ using Domain.Entities;
 using Domain.Features.BlogPosts;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using ValidationError = Domain.Shared.ValidationError;
 
 namespace Application.IntegrationTests;
 
@@ -96,45 +97,54 @@ public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
     }
 
     [Fact]
-    public async Task Create_ShouldThrowCustomValidationException_WhenTitleIsEmpty()
+    public async Task Create_ShouldReturnError_WithMissingTitleErrorCode_WhenTitleIsEmpty()
     {
         // Arrange
         var blogPostDto = new CreateBlogPostDto("", "Description");
         var command = new CreateBlogPostCommand(blogPostDto);
 
         // Act
-        Task Action() => Sender.Send(command);
+        var result = await Sender.Send(command);
 
         // Assert
-        await Assert.ThrowsAsync<CustomValidationException>(Action);
+        var error = (ValidationError)result.Error;
+        error.Errors.Select(e => e.Code).Should()
+            .Contain(BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingTitle);
     }
 
     [Fact]
-    public async Task Create_ShouldThrowCustomValidationException_WhenDescriptionIsEmpty()
+    public async Task Create_ShouldReturnError_WithMissingDescriptionErrorCode_WhenDescriptionIsEmpty()
     {
         // Arrange
         var blogPostDto = new CreateBlogPostDto("Title", "");
         var command = new CreateBlogPostCommand(blogPostDto);
 
         // Act
-        Task Action() => Sender.Send(command);
+        var result = await Sender.Send(command);
 
         // Assert
-        await Assert.ThrowsAsync<CustomValidationException>(Action);
+        var error = (ValidationError)result.Error;
+        error.Errors.Select(e => e.Code).Should()
+            .Contain(BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingDescription);
     }
 
     [Fact]
-    public async Task Create_ShouldThrowCustomValidationException_WhenTitleAndDescriptionAreEmpty()
+    public async Task
+        Create_ShouldReturnError_WithMissingTitleAndDescriptionErrorCodes_WhenTitleAndDescriptionAreEmpty()
     {
         // Arrange
         var blogPostDto = new CreateBlogPostDto("", "");
         var command = new CreateBlogPostCommand(blogPostDto);
 
         // Act
-        Task Action() => Sender.Send(command);
+        var result = await Sender.Send(command);
 
         // Assert
-        await Assert.ThrowsAsync<CustomValidationException>(Action);
+        var error = (ValidationError)result.Error;
+        error.Errors.Select(e => e.Code).Should().Contain([
+            BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingTitle,
+            BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingDescription
+        ]);
     }
 
     [Fact]
@@ -158,45 +168,54 @@ public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
     }
 
     [Fact]
-    public async Task Update_ShouldThrowCustomValidationException_WhenTitleIsEmpty()
+    public async Task Update_ShouldReturnError_WithMissingTitleErrorCode_WhenTitleIsEmpty()
     {
         // Arrange
         var blogPostDto = new UpdateBlogPostDto("", "Description");
         var command = new UpdateBlogPostCommand(blogPostDto, 1);
 
         // Act
-        Task Action() => Sender.Send(command);
+        var result = await Sender.Send(command);
 
         // Assert
-        await Assert.ThrowsAsync<CustomValidationException>(Action);
+        var error = (ValidationError)result.Error;
+        error.Errors.Select(e => e.Code).Should()
+            .Contain(BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingTitle);
     }
 
     [Fact]
-    public async Task Update_ShouldThrowCustomValidationException_WhenDescriptionIsEmpty()
+    public async Task Update_ShouldReturnError_WithMissingDescriptionErrorCode_WhenDescriptionIsEmpty()
     {
         // Arrange
         var blogPostDto = new UpdateBlogPostDto("Title", "");
         var command = new UpdateBlogPostCommand(blogPostDto, 1);
 
         // Act
-        Task Action() => Sender.Send(command);
+        var result = await Sender.Send(command);
 
         // Assert
-        await Assert.ThrowsAsync<CustomValidationException>(Action);
+        var error = (ValidationError)result.Error;
+        error.Errors.Select(e => e.Code).Should()
+            .Contain(BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingDescription);
     }
 
     [Fact]
-    public async Task Update_ShouldThrowCustomValidationException_WhenTitleAndDescriptionAreEmpty()
+    public async Task
+        Update_ShouldReturnError_WithMissingTitleAndDescriptionErrorCodes_WhenTitleAndDescriptionAreEmpty()
     {
         // Arrange
         var blogPostDto = new UpdateBlogPostDto("", "");
         var command = new UpdateBlogPostCommand(blogPostDto, 1);
 
         // Act
-        Task Action() => Sender.Send(command);
+        var result = await Sender.Send(command);
 
         // Assert
-        await Assert.ThrowsAsync<CustomValidationException>(Action);
+        var error = (ValidationError)result.Error;
+        error.Errors.Select(e => e.Code).Should().Contain([
+            BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingTitle,
+            BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingDescription
+        ]);
     }
 
     [Fact]

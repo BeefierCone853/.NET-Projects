@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using Application.Features.BlogPosts;
 using Application.Features.BlogPosts.DTOs;
 using FluentAssertions;
 using WebApi.FunctionalTests.Abstractions;
@@ -8,7 +9,7 @@ using WebApi.FunctionalTests.Extensions;
 
 namespace WebApi.FunctionalTests.BlogPosts;
 
-public class CreateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
+public class CreateUpdateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
 {
     [Fact]
     public async Task Should_ReturnOk_WhenRequestIsValid()
@@ -35,14 +36,8 @@ public class CreateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunc
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         CustomProblemDetails problemDetails = await response.GetProblemDetails();
-        problemDetails.Errors
-            .Select(error => error.PropertyName)
-            .Should()
-            .Contain("Title");
-        problemDetails.Errors
-            .Select(error => error.ErrorMessage)
-            .Should()
-            .Contain("'Title' must not be empty.");
+        problemDetails.Errors.Select(e => e.Code).Should()
+            .Contain([BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingTitle]);
     }
 
     [Fact]
@@ -57,14 +52,8 @@ public class CreateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunc
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         CustomProblemDetails problemDetails = await response.GetProblemDetails();
-        problemDetails.Errors
-            .Select(error => error.PropertyName)
-            .Should()
-            .Contain("Description");
-        problemDetails.Errors
-            .Select(error => error.ErrorMessage)
-            .Should()
-            .Contain("'Description' must not be empty.");
+        problemDetails.Errors.Select(e => e.Code).Should()
+            .Contain([BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingDescription]);
     }
 
     [Fact]
@@ -79,21 +68,9 @@ public class CreateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunc
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         CustomProblemDetails problemDetails = await response.GetProblemDetails();
-        problemDetails.Errors
-            .Select(error => error.PropertyName)
-            .Should()
-            .Contain("Description");
-        problemDetails.Errors
-            .Select(error => error.ErrorMessage)
-            .Should()
-            .Contain("'Description' must not be empty.");
-        problemDetails.Errors
-            .Select(error => error.PropertyName)
-            .Should()
-            .Contain("Title");
-        problemDetails.Errors
-            .Select(error => error.ErrorMessage)
-            .Should()
-            .Contain("'Title' must not be empty.");
+        problemDetails.Errors.Select(e => e.Code).Should().Contain([
+            BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingTitle,
+            BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingDescription
+        ]);
     }
 }

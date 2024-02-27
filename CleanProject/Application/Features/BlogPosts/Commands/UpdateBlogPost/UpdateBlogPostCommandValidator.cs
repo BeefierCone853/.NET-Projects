@@ -13,10 +13,10 @@ internal sealed class UpdateBlogPostCommandValidator : AbstractValidator<UpdateB
     public UpdateBlogPostCommandValidator()
     {
         RuleFor(x => x.Title)
-            .NotEmpty()
-            .NotNull();
+            .NotEmpty().WithErrorCode(BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingTitle)
+            .NotNull().WithErrorCode(BlogPostErrorCodes.SharedCreateUpdateBlogPost.NullTitle);
         RuleFor(x => x.Description)
-            .NotEmpty()
-            .NotNull();
+            .NotEmpty().WithErrorCode(BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingDescription)
+            .NotNull().WithErrorCode(BlogPostErrorCodes.SharedCreateUpdateBlogPost.NullDescription);
     }
 }
