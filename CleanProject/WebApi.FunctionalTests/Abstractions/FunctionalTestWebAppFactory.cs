@@ -1,4 +1,5 @@
-﻿using Infrastructure.Data;
+﻿using Domain.Entities;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -28,7 +29,23 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
         });
     }
 
-    public Task InitializeAsync() => _dbContainer.StartAsync();
+    public async Task InitializeAsync()
+    {
+        await _dbContainer.StartAsync();
+        using var scope = Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        dbContext.BlogPosts.Add(new BlogPost
+        {
+            Title = "abc",
+            Description = "abc"
+        });
+        dbContext.BlogPosts.Add(new BlogPost
+        {
+            Title = "bca",
+            Description = "bca"
+        });
+        await dbContext.SaveChangesAsync();
+    }
 
-    public new Task DisposeAsync() => _dbContainer.DisposeAsync().AsTask();
+    public new async Task DisposeAsync() => await _dbContainer.DisposeAsync();
 }

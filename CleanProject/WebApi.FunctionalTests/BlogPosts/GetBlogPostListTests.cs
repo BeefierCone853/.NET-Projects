@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using Application.Features.BlogPosts.DTOs;
+using Application.Helpers;
 using FluentAssertions;
 using WebApi.FunctionalTests.Abstractions;
 
@@ -11,37 +12,110 @@ public class GetBlogPostListTests(FunctionalTestWebAppFactory factory) : BaseFun
     [Fact]
     public async Task Should_ReturnOk_WithBlogPostDtos_WhenBlogPostExists()
     {
-        // Arrange
-        await CreateBlogPostsAsync();
-
         // Act
-        var response = await HttpClient.GetAsync(BlogPostEndpoint);
+        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var result = await response.Content.ReadFromJsonAsync<List<BlogPostDto>>();
-        result?.Count.Should().Be(2);
+        var result = await response.Content.ReadFromJsonAsync<PagedList<BlogPostDto>>();
+        result?.Items.Count.Should().Be(2);
     }
 
     [Fact]
-    public async Task Should_ReturnOk_WithEmptyList_WhenBlogPostTableIsEmpty()
+    public async Task Should_ReturnOk_WithSortedListByTitle_WhenBlogPostExists()
     {
         // Act
-        var response = await HttpClient.GetAsync(BlogPostEndpoint);
+        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&?SortColumn=title");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var result = await response.Content.ReadFromJsonAsync<List<BlogPostDto>>();
-        result.Should().BeEmpty();
+        var result = await response.Content.ReadFromJsonAsync<PagedList<BlogPostDto>>();
+        result?.Items.Count.Should().Be(2);
+        result?.Items[0].Title.Should().Be(FirstTitle);
     }
 
-    private async Task CreateBlogPostsAsync()
+    [Fact]
+    public async Task Should_ReturnOk_WithSortedListByTitleAndDescendingOrder_WhenBlogPostExists()
     {
-        var request = new CreateBlogPostDto("This is the title", "This is the description");
-        var blogPost1 = new BlogPostDto(request.Title, request.Description, 1);
-        await HttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
-        request = new CreateBlogPostDto("This is the title2", "This is the description2");
-        var blogPost2 = new BlogPostDto(request.Title, request.Description, 2);
-        await HttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
+        // Act
+        var response =
+            await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&?SortColumn=title&SortOrder=desc");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var result = await response.Content.ReadFromJsonAsync<PagedList<BlogPostDto>>();
+        result?.Items.Count.Should().Be(2);
+        result?.Items[0].Title.Should().Be(SecondTitle);
+    }
+
+    [Fact]
+    public async Task Should_ReturnOk_WithSortedListByDescription_WhenBlogPostExists()
+    {
+        // Act
+        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&?SortColumn=description");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var result = await response.Content.ReadFromJsonAsync<PagedList<BlogPostDto>>();
+        result?.Items.Count.Should().Be(2);
+        result?.Items[0].Description.Should().Be(FirstDescription);
+    }
+
+    [Fact]
+    public async Task Should_ReturnOk_WithSortedListByDescriptionAndDescendingOrder_WhenBlogPostExists()
+    {
+        // Act
+        var response =
+            await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&?SortColumn=description&SortOrder=desc");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var result = await response.Content.ReadFromJsonAsync<PagedList<BlogPostDto>>();
+        result?.Items.Count.Should().Be(2);
+        result?.Items[0].Description.Should().Be(SecondDescription);
+    }
+
+    [Fact]
+    public async Task Should_ReturnOk_WithSortedListAndObjectsContainingTheSearchTerm_WhenBlogPostExists()
+    {
+        // Act
+        var response =
+            await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&SearchTerm=abc");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var result = await response.Content.ReadFromJsonAsync<PagedList<BlogPostDto>>();
+        result?.Items.Count.Should().Be(1);
+        result?.Items[0].Title.Should().Be(FirstTitle);
+        result?.Items[0].Description.Should().Be(FirstDescription);
+    }
+
+    [Fact]
+    public async Task Should_Return500Error_WhenPageParameterIsZero()
+    {
+        // Act
+        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=0&PageSize=10");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+    }
+}
+
+public class GetBlogPostListIsolatedTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
+{
+    [Fact]
+    public async Task Should_ReturnOk_WithEmptyList_WhenBlogPostTableIsEmpty()
+    {
+        // Arrange
+        await HttpClient.DeleteAsync($"{BlogPostEndpoint}/1");
+        await HttpClient.DeleteAsync($"{BlogPostEndpoint}/2");
+        
+        // Act
+        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var result = await response.Content.ReadFromJsonAsync<PagedList<BlogPostDto>>();
+        result?.Items.Should().BeEmpty();
     }
 }

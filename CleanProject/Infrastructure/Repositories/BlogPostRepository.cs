@@ -20,4 +20,9 @@ internal class BlogPostRepository(ApplicationDbContext dbContext)
         var entity = await GetById(id);
         return entity != null;
     }
+
+    public IQueryable<BlogPost> GetQueryable()
+    {
+        return DbContext.BlogPosts.AsQueryable();
+    }
 }

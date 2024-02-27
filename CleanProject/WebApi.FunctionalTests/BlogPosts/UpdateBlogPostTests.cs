@@ -29,7 +29,7 @@ public class UpdateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunc
     public async Task Should_ReturnNotFound_WhenBlogPostIsNotInDatabase()
     {
         // Arrange
-        const int id = 1;
+        const int id = 10;
         var request = new UpdateBlogPostDto("This is the title", "This is the description");
 
         // Act

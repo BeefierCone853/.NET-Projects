@@ -23,7 +23,7 @@ public class DeleteBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunc
     public async Task Should_ReturnNotFound_WhenBlogPostIsNotInDatabase()
     {
         // Arrange
-        const int id = 1;
+        const int id = 10;
 
         // Act
         var response = await HttpClient.DeleteAsync($"{BlogPostEndpoint}/{id}");

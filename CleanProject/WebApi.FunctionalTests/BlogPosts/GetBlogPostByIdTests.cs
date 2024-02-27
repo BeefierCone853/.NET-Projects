@@ -28,7 +28,7 @@ public class GetBlogPostByIdTests(FunctionalTestWebAppFactory factory) : BaseFun
     public async Task Should_ReturnNotFound_WhenBlogPostIsNotInDatabase()
     {
         // Act
-        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}/1");
+        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}/10");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);

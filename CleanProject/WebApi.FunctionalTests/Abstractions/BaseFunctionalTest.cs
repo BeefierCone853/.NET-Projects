@@ -7,7 +7,11 @@ public class BaseFunctionalTest(FunctionalTestWebAppFactory factory) : IClassFix
 {
     protected HttpClient HttpClient { get; } = factory.CreateClient();
     protected const string BlogPostEndpoint = "api/v1/blogposts";
-    
+    protected const string FirstTitle = "abc";
+    protected const string FirstDescription = "abc";
+    protected const string SecondTitle = "bca";
+    protected const string SecondDescription = "bca";
+
     protected async Task<int> CreateBlogPostAsync()
     {
         var request = new CreateBlogPostDto("This is the title", "This is the description");

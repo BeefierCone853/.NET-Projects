@@ -15,4 +15,9 @@ public static class BlogPostErrorCodes
         public const string MissingDescription = nameof(MissingDescription);
         public const string NullDescription = nameof(NullDescription);
     }
+
+    public static class BlogPostPagination
+    {
+        public const string PageGreaterThanZero = nameof(PageGreaterThanZero);
+    }
 }

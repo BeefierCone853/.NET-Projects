@@ -4,6 +4,7 @@ using Application.Features.BlogPosts.Commands.UpdateBlogPost;
 using Application.Features.BlogPosts.DTOs;
 using Application.Features.BlogPosts.Queries.GetBlogPostById;
 using Application.Features.BlogPosts.Queries.GetBlogPostList;
+using Application.Helpers;
 using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -34,14 +35,16 @@ public class BlogPostEndpoints : ICarterModule
     /// <summary>
     /// Retrieves all blog posts.
     /// </summary>
+    /// <param name="searchQuery">Query parameters.</param>
     /// <param name="sender">Sends a request through the mediator pipeline.</param>
     /// <param name="cancellationToken">Signals if a task or operation should be cancelled.</param>
     /// <returns>List of blog posts.</returns>
     public static async Task<IResult> GetBlogPostList(
+        [AsParameters] SearchQuery searchQuery,
         ISender sender,
         CancellationToken cancellationToken)
     {
-        var query = new GetBlogPostListQuery();
+        var query = new GetBlogPostListQuery(searchQuery);
         var result = await sender.Send(query, cancellationToken);
         return result.Match(Results.Ok, CustomResults.Problem);
     }

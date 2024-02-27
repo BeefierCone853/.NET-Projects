@@ -3,12 +3,12 @@ using FluentValidation;
 namespace Application.Features.BlogPosts.Commands.UpdateBlogPost;
 
 /// <summary>
-/// Validates incoming request for updating blog posts.
+/// Validates incoming requests for updating blog posts.
 /// </summary>
 internal sealed class UpdateBlogPostCommandValidator : AbstractValidator<UpdateBlogPostCommand>
 {
     /// <summary>
-    /// Creates validation rules for the blog post properties.
+    /// Creates validation rules.
     /// </summary>
     public UpdateBlogPostCommandValidator()
     {

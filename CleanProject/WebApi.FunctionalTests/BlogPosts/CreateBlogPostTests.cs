@@ -22,6 +22,8 @@ public class CreateUpdateBlogPostTests(FunctionalTestWebAppFactory factory) : Ba
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var blogPostId = await response.Content.ReadFromJsonAsync<int>();
+        blogPostId.Should().Be(3);
     }
 
     [Fact]

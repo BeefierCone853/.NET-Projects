@@ -5,6 +5,7 @@ using Application.Features.BlogPosts.Commands.UpdateBlogPost;
 using Application.Features.BlogPosts.DTOs;
 using Application.Features.BlogPosts.Queries.GetBlogPostById;
 using Application.Features.BlogPosts.Queries.GetBlogPostList;
+using Application.Helpers;
 using Application.IntegrationTests.Abstractions;
 using Domain.Entities;
 using Domain.Features.BlogPosts;
@@ -16,12 +17,19 @@ namespace Application.IntegrationTests;
 
 public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
 {
+    private static readonly SearchQuery SearchQuery = new SearchQuery(
+        null,
+        null,
+        null,
+        1,
+        10);
+
     [Fact]
     public async Task GetList_ShouldReturnNonEmptyBlogPostDtoList_WhenBlogPostExists()
     {
         // Arrange
         await CreateBlogPostsAsync();
-        var getListCommand = new GetBlogPostListQuery();
+        var getListCommand = new GetBlogPostListQuery(SearchQuery);
 
         // Act
         await Sender.Send(getListCommand);
@@ -36,7 +44,7 @@ public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
     public async Task GetList_ShouldReturnEmptyBlogPostDtoList_WhenBlogPostTableIsEmpty()
     {
         // Arrange
-        var getListCommand = new GetBlogPostListQuery();
+        var getListCommand = new GetBlogPostListQuery(SearchQuery);
 
         // Act
         await Sender.Send(getListCommand);

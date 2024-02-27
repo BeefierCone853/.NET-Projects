@@ -14,4 +14,10 @@ public interface IBlogPostRepository : IGenericRepository<BlogPost>
     /// <param name="id">Represents the unique identifier of an entity.</param>
     /// <returns>Boolean if an entity exists.</returns>
     Task<bool> Exists(int id);
+    
+    /// <summary>
+    /// Gets queryable interface for <see cref="BlogPost"/>s.
+    /// </summary>
+    /// <returns><see cref="BlogPost"/>Queryable.</returns>
+    IQueryable<BlogPost> GetQueryable();
 }
