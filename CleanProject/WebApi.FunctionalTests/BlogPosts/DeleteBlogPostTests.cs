@@ -1,6 +1,4 @@
 ﻿using System.Net;
-using System.Net.Http.Json;
-using Application.Features.BlogPosts.DTOs;
 using FluentAssertions;
 using WebApi.FunctionalTests.Abstractions;
 
@@ -12,11 +10,10 @@ public class DeleteBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunc
     public async Task Should_ReturnNoContent_WhenBlogPostWasDeleted()
     {
         // Arrange
-        var request = new CreateBlogPostDto("This is the title", "This is the description");
-        await HttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
+        var id = await CreateBlogPostAsync();
 
         // Act
-        var response = await HttpClient.DeleteAsync($"{BlogPostEndpoint}/1");
+        var response = await HttpClient.DeleteAsync($"{BlogPostEndpoint}/{id}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);

@@ -12,10 +12,8 @@ public class UpdateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunc
     public async Task Should_ReturnNoContent_WhenBlogPostWasUpdated()
     {
         // Arrange
-        const int id = 1;
+        var id = await CreateBlogPostAsync();
         var updateRequest = new UpdateBlogPostDto("New title", "New description");
-        var createRequest = new CreateBlogPostDto("This is the title", "This is the description");
-        await HttpClient.PostAsJsonAsync(BlogPostEndpoint, createRequest);
 
         // Act
         var response = await HttpClient.PutAsJsonAsync($"{BlogPostEndpoint}/{id}", updateRequest);
@@ -29,7 +27,7 @@ public class UpdateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunc
     {
         // Arrange
         const int id = 1;
-        var request = new CreateBlogPostDto("This is the title", "This is the description");
+        var request = new UpdateBlogPostDto("This is the title", "This is the description");
 
         // Act
         var response = await HttpClient.PutAsJsonAsync($"{BlogPostEndpoint}/{id}", request);

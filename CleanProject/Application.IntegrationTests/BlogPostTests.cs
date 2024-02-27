@@ -19,12 +19,7 @@ public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
     public async Task GetList_ShouldReturnNonEmptyBlogPostDtoList_WhenBlogPostExists()
     {
         // Arrange
-        var blogPostDto = new CreateBlogPostDto("Title", "Description");
-        var command = new CreateBlogPostCommand(blogPostDto);
-        await Sender.Send(command);
-        blogPostDto = new CreateBlogPostDto("Title2", "Description2");
-        command = new CreateBlogPostCommand(blogPostDto);
-        await Sender.Send(command);
+        await CreateBlogPostsAsync();
         var getListCommand = new GetBlogPostListQuery();
 
         // Act
@@ -55,12 +50,9 @@ public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
     public async Task GetById_ShouldReturnBlogPost_WhenBlogPostExists()
     {
         // Arrange
-        const string title = "title";
-        const string description = "description";
-        // Arrange
-        var blogPostDto = new CreateBlogPostDto(title, description);
-        var command = new CreateBlogPostCommand(blogPostDto);
-        var createResult = await Sender.Send(command);
+        const string title = "customTitle";
+        const string description = "customDescription";
+        var createResult = await CreateBlogPostAsync(title, description);
         var query = new GetBlogPostByIdQuery(createResult.Value);
 
         // Act
@@ -92,7 +84,7 @@ public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
     public async Task Create_ShouldAdd_WhenBlogPostIsValid()
     {
         // Arrange
-        var blogPostDto = new CreateBlogPostDto("Title", "Description");
+        var blogPostDto = new CreateBlogPostDto("Title2", "Description2");
         var command = new CreateBlogPostCommand(blogPostDto);
 
         // Act
@@ -149,9 +141,7 @@ public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
     public async Task Update_ShouldUpdate_WhenBlogPostExists()
     {
         // Arrange
-        var blogPostDto = new CreateBlogPostDto("Title", "Description");
-        var createCommand = new CreateBlogPostCommand(blogPostDto);
-        var createResult = await Sender.Send(createCommand);
+        var createResult = await CreateBlogPostAsync();
         var updateBlogPostDto = new UpdateBlogPostDto("New title", "New description");
         var updateCommand = new UpdateBlogPostCommand(updateBlogPostDto, createResult.Value);
         var existingBlogPost = DbContext.BlogPosts.FirstOrDefault(blogPost => blogPost.Id == createResult.Value);
@@ -213,19 +203,16 @@ public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
     public async Task Delete_ShouldDelete_WhenBlogPostExists()
     {
         // Arrange
-        const int id = 1;
-        var blogPostDto = new CreateBlogPostDto("Title", "Description");
-        var createCommand = new CreateBlogPostCommand(blogPostDto);
-        await Sender.Send(createCommand);
-        var deleteCommand = new DeleteBlogPostCommand(id);
-        var existingBlogPost = DbContext.BlogPosts.FirstOrDefault(blogPost => blogPost.Id == id);
+        var createResult = await CreateBlogPostAsync();
+        var deleteCommand = new DeleteBlogPostCommand(createResult.Value);
+        var existingBlogPost = DbContext.BlogPosts.FirstOrDefault(blogPost => blogPost.Id == createResult.Value);
         Assert.NotNull(existingBlogPost);
 
         // Act
         await Sender.Send(deleteCommand);
 
         // Assert
-        var blogPost = DbContext.BlogPosts.FirstOrDefault(blogPost => blogPost.Id == id);
+        var blogPost = DbContext.BlogPosts.FirstOrDefault(blogPost => blogPost.Id == createResult.Value);
         Assert.Null(blogPost);
     }
 }

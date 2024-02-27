@@ -31,6 +31,9 @@ public class CreateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunc
 
         // Act
         var response = await HttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         CustomProblemDetails problemDetails = await response.GetProblemDetails();
         problemDetails.Errors
             .Select(error => error.PropertyName)
@@ -40,9 +43,6 @@ public class CreateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunc
             .Select(error => error.ErrorMessage)
             .Should()
             .Contain("'Title' must not be empty.");
-
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]
