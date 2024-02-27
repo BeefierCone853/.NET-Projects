@@ -23,7 +23,7 @@ public class BlogPostEndpoints : ICarterModule
     /// <param name="app">Route builder.</param>
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/blogposts");
+        var group = app.MapGroup("blogposts");
         group.MapPost("", CreateBlogPost);
         group.MapGet("", GetBlogPostList);
         group.MapGet("{id:int}", GetBlogPostById);
