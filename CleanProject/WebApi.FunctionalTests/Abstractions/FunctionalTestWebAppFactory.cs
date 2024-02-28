@@ -34,10 +34,7 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
         });
     }
 
-    public async Task ResetDatabaseAsync()
-    {
-        await _respawner.ResetAsync(_dbConnection);
-    }
+    public new async Task DisposeAsync() => await _dbContainer.DisposeAsync();
 
     public async Task InitializeAsync()
     {
@@ -57,5 +54,8 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
         });
     }
 
-    public new async Task DisposeAsync() => await _dbContainer.DisposeAsync();
+    public async Task ResetDatabaseAsync()
+    {
+        await _respawner.ResetAsync(_dbConnection);
+    }
 }

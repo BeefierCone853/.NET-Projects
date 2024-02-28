@@ -5,7 +5,6 @@ using Application.Features.BlogPosts.Commands.UpdateBlogPost;
 using Application.Features.BlogPosts.DTOs;
 using Application.Features.BlogPosts.Queries.GetBlogPostById;
 using Application.Features.BlogPosts.Queries.GetBlogPostList;
-using Application.Helpers;
 using Application.IntegrationTests.Abstractions;
 using Domain.Entities;
 using Domain.Features.BlogPosts;
@@ -15,14 +14,9 @@ using ValidationError = Domain.Shared.ValidationError;
 
 namespace Application.IntegrationTests;
 
-public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
+[Collection(nameof(SharedTestCollection))]
+public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory), IAsyncLifetime
 {
-    private static readonly SearchQuery SearchQuery = new SearchQuery(
-        null,
-        null,
-        null,
-        1,
-        10);
 
     [Fact]
     public async Task GetList_ShouldReturnNonEmptyBlogPostDtoList_WhenBlogPostExists()
@@ -242,4 +236,8 @@ public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
         var blogPost = DbContext.BlogPosts.FirstOrDefault(blogPost => blogPost.Id == createResult.Value);
         Assert.Null(blogPost);
     }
+
+    public Task InitializeAsync() => ResetDatabase();
+
+    public Task DisposeAsync() => Task.CompletedTask;
 }
