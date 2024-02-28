@@ -38,7 +38,7 @@ Some of those are:
 
 ### CQRS
 
-CQRS separates read and write operations for a database. It maximizes performance, scalabilty and security.
+CQRS separates read and write operations for a database. It maximizes performance, scalability and security.
 [**MediatR**](https://github.com/jbogard/MediatR) is used to achieve this.
 On this project, the Read/Write database is not seperated.
 
