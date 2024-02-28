@@ -2,16 +2,14 @@
 
 This is a .NET 8 project following the [**Clean Architecture**](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).
 The project is for learning purposes and testing new things.
-For a more up-to date project, check out the **minimal-apis** branch.
 
 ## Endpoints
 
-The API endpoints are built using controllers.
-There is a second branch where the API endpoints are built using [**Minimal APIs**](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis?view=aspnetcore-8.0).
+The API endpoints are built using [**Minimal APIs**](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis?view=aspnetcore-8.0).
 
 ## Technology Stack
 
-This section contains a quick overview on the technology stack of the application.
+This section contains a quick overview of the technology stack of the application.
 
 ### Entity Framework Core
 

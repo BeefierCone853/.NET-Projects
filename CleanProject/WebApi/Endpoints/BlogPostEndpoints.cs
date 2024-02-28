@@ -4,69 +4,83 @@ using Application.Features.BlogPosts.Commands.UpdateBlogPost;
 using Application.Features.BlogPosts.DTOs;
 using Application.Features.BlogPosts.Queries.GetBlogPostById;
 using Application.Features.BlogPosts.Queries.GetBlogPostList;
+using Application.Helpers;
+using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Abstractions;
+using WebApi.Extensions;
+using WebApi.Infrastructure;
 
-namespace WebApi.Controllers;
+namespace WebApi.Endpoints;
 
 /// <summary>
-/// Controller for handling BlogPost CRUD operations.
+/// Endpoint for handling BlogPost CRUD operations.
 /// </summary>
-/// <param name="sender">Sends a request through the mediator pipeline.</param>
-[Route("api/[controller]")]
-[ApiController]
-public class BlogPostController(ISender sender) : ApiController(sender)
+public class BlogPostEndpoints : ICarterModule
 {
+    /// <summary>
+    /// Groups and adds routes.
+    /// </summary>
+    /// <param name="app">Route builder.</param>
+    public void AddRoutes(IEndpointRouteBuilder app)
+    {
+        var group = app.MapGroup("blogposts");
+        group.MapPost("", CreateBlogPost);
+        group.MapGet("", GetBlogPostList);
+        group.MapGet("{id:int}", GetBlogPostById);
+        group.MapPut("{id:int}", UpdateBlogPost);
+        group.MapDelete("{id:int}", DeleteBlogPost);
+    }
+
     /// <summary>
     /// Retrieves all blog posts.
     /// </summary>
+    /// <param name="searchQuery">Query parameters.</param>
+    /// <param name="sender">Sends a request through the mediator pipeline.</param>
     /// <param name="cancellationToken">Signals if a task or operation should be cancelled.</param>
     /// <returns>List of blog posts.</returns>
-    // GET api/<BlogPostController>
-    [HttpGet]
-    [ProducesResponseType(200)]
-    public async Task<IActionResult> GetBlogPostList(CancellationToken cancellationToken)
+    public static async Task<IResult> GetBlogPostList(
+        [AsParameters] SearchQuery searchQuery,
+        ISender sender,
+        CancellationToken cancellationToken)
     {
-        var query = new GetBlogPostListQuery();
-        var result = await Sender.Send(query, cancellationToken);
-        return Ok(result.Value);
+        var query = new GetBlogPostListQuery(searchQuery);
+        var result = await sender.Send(query, cancellationToken);
+        return result.Match(Results.Ok, CustomResults.Problem);
     }
 
     /// <summary>
     /// Gets a blog post record with the specific unique identifier.
     /// </summary>
     /// <param name="id">Unique identifier of a blog post.</param>
+    /// <param name="sender">Sends a request through the mediator pipeline.</param>
     /// <param name="cancellationToken">Signals if a task or operation should be cancelled.</param>
     /// <returns>Blog post record with the specified unique identifier.</returns>
-    // GET api/<BlogPostController>/5
-    [HttpGet("{id:int}")]
-    [ProducesResponseType(200)]
-    [ProducesResponseType(404)]
-    public async Task<IActionResult> GetBlogPostById(int id, CancellationToken cancellationToken)
+    public static async Task<IResult> GetBlogPostById(
+        int id,
+        ISender sender,
+        CancellationToken cancellationToken)
     {
         var query = new GetBlogPostByIdQuery(id);
-        var result = await Sender.Send(query, cancellationToken);
-        return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+        var result = await sender.Send(query, cancellationToken);
+        return result.Match(Results.Ok, CustomResults.Problem);
     }
 
     /// <summary>
     /// Creates a new blog post.
     /// </summary>
     /// <param name="createBlogPostDto">Request containing information about the blog post.</param>
+    /// <param name="sender">Sends a request through the mediator pipeline.</param>
     /// <param name="cancellationToken">Signals if a task or operation should be cancelled.</param>
     /// <returns>Unique identifier of the newly created blog post or a bad request with information about the error.</returns>
-    // POST api/<BlogPostController>
-    [HttpPost]
-    [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    public async Task<IActionResult> CreateBlogPost(
+    public static async Task<IResult> CreateBlogPost(
         CreateBlogPostDto createBlogPostDto,
+        ISender sender,
         CancellationToken cancellationToken)
     {
         var command = new CreateBlogPostCommand(createBlogPostDto);
-        var result = await Sender.Send(command, cancellationToken);
-        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+        var result = await sender.Send(command, cancellationToken);
+        return result.Match(Results.Ok, CustomResults.Problem);
     }
 
     /// <summary>
@@ -74,38 +88,34 @@ public class BlogPostController(ISender sender) : ApiController(sender)
     /// </summary>
     /// <param name="updateBlogPostDto">Request containing new information about the blog post.</param>
     /// <param name="id">Unique identifier of a blog post.</param>
+    /// <param name="sender">Sends a request through the mediator pipeline.</param>
     /// <param name="cancellationToken">Signals if a task or operation should be cancelled.</param>
     /// <returns>No content or a not found response with additional information.</returns>
-    // PUT api/<BlogPostController>/5
-    [HttpPut("{id:int}")]
-    [ProducesResponseType(204)]
-    [ProducesResponseType(404)]
-    public async Task<IActionResult> UpdateBlogPost(
+    public static async Task<IResult> UpdateBlogPost(
         [FromBody] UpdateBlogPostDto updateBlogPostDto,
         [FromRoute] int id,
+        ISender sender,
         CancellationToken cancellationToken)
     {
         var command = new UpdateBlogPostCommand(updateBlogPostDto, id);
-        var result = await Sender.Send(command, cancellationToken);
-        return result.IsSuccess ? NoContent() : NotFound(result.Error);
+        var result = await sender.Send(command, cancellationToken);
+        return result.Match(Results.NoContent, CustomResults.Problem);
     }
 
     /// <summary>
     /// Deletes a blog post with the specified unique identifier.
     /// </summary>
     /// <param name="id">Unique identifier of a blog post.</param>
+    /// <param name="sender">Sends a request through the mediator pipeline.</param>
     /// <param name="cancellationToken">Signals if a task or operation should be cancelled.</param>
     /// <returns>No content or a not found response with additional information.</returns>
-    // DELETE api/<BlogPostController>/5
-    [HttpDelete("{id:int}")]
-    [ProducesResponseType(204)]
-    [ProducesResponseType(404)]
-    public async Task<IActionResult> DeleteBlogPost(
+    public static async Task<IResult> DeleteBlogPost(
         int id,
+        ISender sender,
         CancellationToken cancellationToken)
     {
         var command = new DeleteBlogPostCommand(id);
-        var result = await Sender.Send(command, cancellationToken);
-        return result.IsSuccess ? NoContent() : NotFound(result.Error);
+        var result = await sender.Send(command, cancellationToken);
+        return result.Match(Results.NoContent, CustomResults.Problem);
     }
 }

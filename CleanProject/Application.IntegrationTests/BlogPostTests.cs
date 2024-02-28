@@ -1,31 +1,35 @@
-﻿using Application.Exceptions;
+﻿using Application.Features.BlogPosts;
 using Application.Features.BlogPosts.Commands.CreateBlogPost;
 using Application.Features.BlogPosts.Commands.DeleteBlogPost;
 using Application.Features.BlogPosts.Commands.UpdateBlogPost;
 using Application.Features.BlogPosts.DTOs;
 using Application.Features.BlogPosts.Queries.GetBlogPostById;
 using Application.Features.BlogPosts.Queries.GetBlogPostList;
+using Application.Helpers;
 using Application.IntegrationTests.Abstractions;
 using Domain.Entities;
 using Domain.Features.BlogPosts;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using ValidationError = Domain.Shared.ValidationError;
 
 namespace Application.IntegrationTests;
 
 public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
 {
+    private static readonly SearchQuery SearchQuery = new SearchQuery(
+        null,
+        null,
+        null,
+        1,
+        10);
+
     [Fact]
     public async Task GetList_ShouldReturnNonEmptyBlogPostDtoList_WhenBlogPostExists()
     {
         // Arrange
-        var blogPostDto = new CreateBlogPostDto("Title", "Description");
-        var command = new CreateBlogPostCommand(blogPostDto);
-        await Sender.Send(command);
-        blogPostDto = new CreateBlogPostDto("Title2", "Description2");
-        command = new CreateBlogPostCommand(blogPostDto);
-        await Sender.Send(command);
-        var getListCommand = new GetBlogPostListQuery();
+        await CreateBlogPostsAsync();
+        var getListCommand = new GetBlogPostListQuery(SearchQuery);
 
         // Act
         await Sender.Send(getListCommand);
@@ -40,7 +44,7 @@ public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
     public async Task GetList_ShouldReturnEmptyBlogPostDtoList_WhenBlogPostTableIsEmpty()
     {
         // Arrange
-        var getListCommand = new GetBlogPostListQuery();
+        var getListCommand = new GetBlogPostListQuery(SearchQuery);
 
         // Act
         await Sender.Send(getListCommand);
@@ -55,12 +59,9 @@ public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
     public async Task GetById_ShouldReturnBlogPost_WhenBlogPostExists()
     {
         // Arrange
-        const string title = "title";
-        const string description = "description";
-        // Arrange
-        var blogPostDto = new CreateBlogPostDto(title, description);
-        var command = new CreateBlogPostCommand(blogPostDto);
-        var createResult = await Sender.Send(command);
+        const string title = "customTitle";
+        const string description = "customDescription";
+        var createResult = await CreateBlogPostAsync(title, description);
         var query = new GetBlogPostByIdQuery(createResult.Value);
 
         // Act
@@ -92,7 +93,7 @@ public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
     public async Task Create_ShouldAdd_WhenBlogPostIsValid()
     {
         // Arrange
-        var blogPostDto = new CreateBlogPostDto("Title", "Description");
+        var blogPostDto = new CreateBlogPostDto("Title2", "Description2");
         var command = new CreateBlogPostCommand(blogPostDto);
 
         // Act
@@ -104,54 +105,61 @@ public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
     }
 
     [Fact]
-    public async Task Create_ShouldThrowCustomValidationException_WhenTitleIsEmpty()
+    public async Task Create_ShouldReturnError_WithMissingTitleErrorCode_WhenTitleIsEmpty()
     {
         // Arrange
         var blogPostDto = new CreateBlogPostDto("", "Description");
         var command = new CreateBlogPostCommand(blogPostDto);
 
         // Act
-        Task Action() => Sender.Send(command);
+        var result = await Sender.Send(command);
 
         // Assert
-        await Assert.ThrowsAsync<CustomValidationException>(Action);
+        var error = (ValidationError)result.Error;
+        error.Errors.Select(e => e.Code).Should()
+            .Contain(BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingTitle);
     }
 
     [Fact]
-    public async Task Create_ShouldThrowCustomValidationException_WhenDescriptionIsEmpty()
+    public async Task Create_ShouldReturnError_WithMissingDescriptionErrorCode_WhenDescriptionIsEmpty()
     {
         // Arrange
         var blogPostDto = new CreateBlogPostDto("Title", "");
         var command = new CreateBlogPostCommand(blogPostDto);
 
         // Act
-        Task Action() => Sender.Send(command);
+        var result = await Sender.Send(command);
 
         // Assert
-        await Assert.ThrowsAsync<CustomValidationException>(Action);
+        var error = (ValidationError)result.Error;
+        error.Errors.Select(e => e.Code).Should()
+            .Contain(BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingDescription);
     }
 
     [Fact]
-    public async Task Create_ShouldThrowCustomValidationException_WhenTitleAndDescriptionAreEmpty()
+    public async Task
+        Create_ShouldReturnError_WithMissingTitleAndDescriptionErrorCodes_WhenTitleAndDescriptionAreEmpty()
     {
         // Arrange
         var blogPostDto = new CreateBlogPostDto("", "");
         var command = new CreateBlogPostCommand(blogPostDto);
 
         // Act
-        Task Action() => Sender.Send(command);
+        var result = await Sender.Send(command);
 
         // Assert
-        await Assert.ThrowsAsync<CustomValidationException>(Action);
+        var error = (ValidationError)result.Error;
+        error.Errors.Select(e => e.Code).Should().Contain([
+            BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingTitle,
+            BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingDescription
+        ]);
     }
 
     [Fact]
     public async Task Update_ShouldUpdate_WhenBlogPostExists()
     {
         // Arrange
-        var blogPostDto = new CreateBlogPostDto("Title", "Description");
-        var createCommand = new CreateBlogPostCommand(blogPostDto);
-        var createResult = await Sender.Send(createCommand);
+        var createResult = await CreateBlogPostAsync();
         var updateBlogPostDto = new UpdateBlogPostDto("New title", "New description");
         var updateCommand = new UpdateBlogPostCommand(updateBlogPostDto, createResult.Value);
         var existingBlogPost = DbContext.BlogPosts.FirstOrDefault(blogPost => blogPost.Id == createResult.Value);
@@ -168,64 +176,70 @@ public class BlogPostTests(IntegrationTestWebAppFactory factory) : BaseIntegrati
     }
 
     [Fact]
-    public async Task Update_ShouldThrowCustomValidationException_WhenTitleIsEmpty()
+    public async Task Update_ShouldReturnError_WithMissingTitleErrorCode_WhenTitleIsEmpty()
     {
         // Arrange
         var blogPostDto = new UpdateBlogPostDto("", "Description");
         var command = new UpdateBlogPostCommand(blogPostDto, 1);
 
         // Act
-        Task Action() => Sender.Send(command);
+        var result = await Sender.Send(command);
 
         // Assert
-        await Assert.ThrowsAsync<CustomValidationException>(Action);
+        var error = (ValidationError)result.Error;
+        error.Errors.Select(e => e.Code).Should()
+            .Contain(BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingTitle);
     }
 
     [Fact]
-    public async Task Update_ShouldThrowCustomValidationException_WhenDescriptionIsEmpty()
+    public async Task Update_ShouldReturnError_WithMissingDescriptionErrorCode_WhenDescriptionIsEmpty()
     {
         // Arrange
         var blogPostDto = new UpdateBlogPostDto("Title", "");
         var command = new UpdateBlogPostCommand(blogPostDto, 1);
 
         // Act
-        Task Action() => Sender.Send(command);
+        var result = await Sender.Send(command);
 
         // Assert
-        await Assert.ThrowsAsync<CustomValidationException>(Action);
+        var error = (ValidationError)result.Error;
+        error.Errors.Select(e => e.Code).Should()
+            .Contain(BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingDescription);
     }
 
     [Fact]
-    public async Task Update_ShouldThrowCustomValidationException_WhenTitleAndDescriptionAreEmpty()
+    public async Task
+        Update_ShouldReturnError_WithMissingTitleAndDescriptionErrorCodes_WhenTitleAndDescriptionAreEmpty()
     {
         // Arrange
         var blogPostDto = new UpdateBlogPostDto("", "");
         var command = new UpdateBlogPostCommand(blogPostDto, 1);
 
         // Act
-        Task Action() => Sender.Send(command);
+        var result = await Sender.Send(command);
 
         // Assert
-        await Assert.ThrowsAsync<CustomValidationException>(Action);
+        var error = (ValidationError)result.Error;
+        error.Errors.Select(e => e.Code).Should().Contain([
+            BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingTitle,
+            BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingDescription
+        ]);
     }
 
     [Fact]
     public async Task Delete_ShouldDelete_WhenBlogPostExists()
     {
         // Arrange
-        const int id = 1;
-        var blogPostDto = new CreateBlogPostDto("Title", "Description");
-        var createCommand = new CreateBlogPostCommand(blogPostDto);
-        await Sender.Send(createCommand);
-        var deleteCommand = new DeleteBlogPostCommand(id);
-        var existingBlogPost = DbContext.BlogPosts.FirstOrDefault(blogPost => blogPost.Id == id);
+        var createResult = await CreateBlogPostAsync();
+        var deleteCommand = new DeleteBlogPostCommand(createResult.Value);
+        var existingBlogPost = DbContext.BlogPosts.FirstOrDefault(blogPost => blogPost.Id == createResult.Value);
         Assert.NotNull(existingBlogPost);
 
         // Act
         await Sender.Send(deleteCommand);
 
         // Assert
-        var blogPost = DbContext.BlogPosts.FirstOrDefault(blogPost => blogPost.Id == id);
+        var blogPost = DbContext.BlogPosts.FirstOrDefault(blogPost => blogPost.Id == createResult.Value);
         Assert.Null(blogPost);
     }
 }

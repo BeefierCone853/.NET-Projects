@@ -15,8 +15,8 @@ public record Error
     /// Creates a failure error for a null value. The error type is <see cref="ErrorType.Failure"/>.
     /// </summary>
     public static readonly Error NullValue = new(
-        "Error.NullValue",
-        "The specified result value is null.",
+        "General.NullValue",
+        "Null value was provided.",
         ErrorType.Failure);
 
     /// <summary>
@@ -24,12 +24,12 @@ public record Error
     /// </summary>
     /// <param name="code">Code for the error.</param>
     /// <param name="description">Description of the error.</param>
-    /// <param name="errorType">Type of the error.</param>
-    public Error(string code, string description, ErrorType errorType)
+    /// <param name="type">Type of the error.</param>
+    public Error(string code, string description, ErrorType type)
     {
         Code = code;
         Description = description;
-        Type = errorType;
+        Type = type;
     }
 
     /// <summary>
@@ -57,13 +57,13 @@ public record Error
         new(code, description, ErrorType.Failure);
 
     /// <summary>
-    /// Creates an error indicating a validation error has occured.
+    /// Creates an error indicating a problem has occured.
     /// </summary>
     /// <param name="code">Code for the error.</param>
     /// <param name="description">Description of the error.</param>
-    /// <returns>A validation error with <see cref="ErrorType.Validation"/> type.</returns>
-    public static Error Validation(string code, string description) =>
-        new(code, description, ErrorType.Validation);
+    /// <returns>A failure error with <see cref="ErrorType.Failure"/> type.</returns>
+    public static Error Problem(string code, string description) =>
+        new(code, description, ErrorType.Problem);
 
     /// <summary>
     /// Creates an error indicating a not found error has occured.

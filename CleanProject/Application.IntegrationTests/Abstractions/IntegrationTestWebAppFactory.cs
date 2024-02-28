@@ -28,7 +28,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
         });
     }
 
-    public Task InitializeAsync() => _dbContainer.StartAsync();
+    public async Task InitializeAsync() => await _dbContainer.StartAsync();
 
     public new Task DisposeAsync() => _dbContainer.DisposeAsync().AsTask();
 }

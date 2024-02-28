@@ -1,16 +1,17 @@
 using Application;
+using Asp.Versioning;
+using Carter;
 using Infrastructure;
-using Persistence;
 using Serilog;
 using WebApi.Extensions;
 using WebApi.Infrastructure;
 using WebApi.Middleware;
+using WebApi.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, loggerConfig) =>
     loggerConfig.ReadFrom.Configuration(context.Configuration));
-builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services
@@ -24,16 +25,46 @@ builder.Services.AddCors(o =>
             .AllowAnyHeader()
             .AllowAnyMethod());
 });
+builder.Services.AddCarter();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
-
+builder.Services.AddApiVersioning(options =>
+    {
+        options.DefaultApiVersion = new ApiVersion(1);
+        options.ApiVersionReader = new UrlSegmentApiVersionReader();
+    })
+    .AddApiExplorer(options =>
+    {
+        options.GroupNameFormat = "'v'V";
+        options.SubstituteApiVersionInUrl = true;
+    });
+builder.Services.ConfigureOptions<ConfigureSwaggerGenOptions>();
 var app = builder.Build();
+
+var apiVersionSet = app.NewApiVersionSet()
+    .HasApiVersion(new ApiVersion(1))
+    .ReportApiVersions()
+    .Build();
+var versionedGroup = app
+    .MapGroup("api/v{apiVersion:apiVersion}")
+    .WithApiVersionSet(apiVersionSet);
+
+versionedGroup.MapCarter();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        var descriptions = app.DescribeApiVersions();
+        foreach (var description in descriptions)
+        {
+            var url = $"/swagger/{description.GroupName}/swagger.json";
+            var name = description.GroupName.ToUpperInvariant();
+            options.SwaggerEndpoint(url, name);
+        }
+    });
     app.ApplyMigrations();
 }
 
@@ -43,11 +74,7 @@ app.UseMiddleware<RequestLogContextMiddleware>();
 
 app.UseSerilogRequestLogging();
 
-app.UseAuthorization();
-
 app.UseExceptionHandler();
-
-app.MapControllers();
 
 app.UseCors("CorsPolicy");
 

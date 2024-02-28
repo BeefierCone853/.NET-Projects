@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace Domain.Shared;
 
 /// <summary>
-/// Helper class for ensuring a state of the parameter.
+/// Guard clause class.
 /// </summary>
 public static class Ensure
 {
