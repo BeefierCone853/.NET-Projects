@@ -25,7 +25,7 @@ The database system used on the project is [**PostgreSQL**](https://www.postgres
 
 ### Seq
 
-[**Seq**](https://datalust.co/seq) is used for For centralized logging.
+[**Seq**](https://datalust.co/seq) is used for for centralized logging.
 
 ## Patterns
 
