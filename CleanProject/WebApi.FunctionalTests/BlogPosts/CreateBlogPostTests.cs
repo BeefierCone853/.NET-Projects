@@ -9,7 +9,9 @@ using WebApi.FunctionalTests.Extensions;
 
 namespace WebApi.FunctionalTests.BlogPosts;
 
-public class CreateUpdateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
+[Collection(nameof(SharedTestCollection))]
+public class CreateUpdateBlogPostTests(FunctionalTestWebAppFactory factory)
+    : BaseFunctionalTest(factory), IAsyncLifetime
 {
     [Fact]
     public async Task Should_ReturnOk_WhenRequestIsValid()
@@ -23,7 +25,7 @@ public class CreateUpdateBlogPostTests(FunctionalTestWebAppFactory factory) : Ba
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var blogPostId = await response.Content.ReadFromJsonAsync<int>();
-        blogPostId.Should().Be(3);
+        blogPostId.Should().Be(1);
     }
 
     [Fact]
@@ -75,4 +77,8 @@ public class CreateUpdateBlogPostTests(FunctionalTestWebAppFactory factory) : Ba
             BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingDescription
         ]);
     }
+
+    public Task InitializeAsync() => ResetDatabase();
+
+    public Task DisposeAsync() => Task.CompletedTask;
 }

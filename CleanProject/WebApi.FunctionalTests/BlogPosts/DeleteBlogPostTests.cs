@@ -4,7 +4,9 @@ using WebApi.FunctionalTests.Abstractions;
 
 namespace WebApi.FunctionalTests.BlogPosts;
 
-public class DeleteBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
+[Collection(nameof(SharedTestCollection))]
+public class DeleteBlogPostTests(FunctionalTestWebAppFactory factory)
+    : BaseFunctionalTest(factory), IAsyncLifetime
 {
     [Fact]
     public async Task Should_ReturnNoContent_WhenBlogPostWasDeleted()
@@ -31,4 +33,8 @@ public class DeleteBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunc
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
+
+    public Task InitializeAsync() => ResetDatabase();
+
+    public Task DisposeAsync() => Task.CompletedTask;
 }

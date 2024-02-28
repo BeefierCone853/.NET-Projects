@@ -7,11 +7,16 @@ using WebApi.FunctionalTests.Abstractions;
 
 namespace WebApi.FunctionalTests.BlogPosts;
 
-public class GetBlogPostListTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
+[Collection(nameof(SharedTestCollection))]
+public class GetBlogPostListTests(FunctionalTestWebAppFactory factory)
+    : BaseFunctionalTest(factory), IAsyncLifetime
 {
     [Fact]
     public async Task Should_ReturnOk_WithBlogPostDtos_WhenBlogPostExists()
     {
+        // Arrange
+        await CreateBlogPostsAsync();
+
         // Act
         var response = await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10");
 
@@ -22,8 +27,23 @@ public class GetBlogPostListTests(FunctionalTestWebAppFactory factory) : BaseFun
     }
 
     [Fact]
+    public async Task Should_ReturnOk_WithEmptyList_WhenBlogPostTableIsEmpty()
+    {
+        // Act
+        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var result = await response.Content.ReadFromJsonAsync<PagedList<BlogPostDto>>();
+        result?.Items.Should().BeEmpty();
+    }
+
+    [Fact]
     public async Task Should_ReturnOk_WithSortedListByTitle_WhenBlogPostExists()
     {
+        // Arrange
+        await CreateBlogPostsAsync();
+
         // Act
         var response = await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&?SortColumn=title");
 
@@ -37,6 +57,9 @@ public class GetBlogPostListTests(FunctionalTestWebAppFactory factory) : BaseFun
     [Fact]
     public async Task Should_ReturnOk_WithSortedListByTitleAndDescendingOrder_WhenBlogPostExists()
     {
+        // Arrange
+        await CreateBlogPostsAsync();
+        
         // Act
         var response =
             await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&?SortColumn=title&SortOrder=desc");
@@ -51,6 +74,9 @@ public class GetBlogPostListTests(FunctionalTestWebAppFactory factory) : BaseFun
     [Fact]
     public async Task Should_ReturnOk_WithSortedListByDescription_WhenBlogPostExists()
     {
+        // Arrange
+        await CreateBlogPostsAsync();
+        
         // Act
         var response = await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&?SortColumn=description");
 
@@ -64,6 +90,9 @@ public class GetBlogPostListTests(FunctionalTestWebAppFactory factory) : BaseFun
     [Fact]
     public async Task Should_ReturnOk_WithSortedListByDescriptionAndDescendingOrder_WhenBlogPostExists()
     {
+        // Arrange
+        await CreateBlogPostsAsync();
+        
         // Act
         var response =
             await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&?SortColumn=description&SortOrder=desc");
@@ -78,6 +107,9 @@ public class GetBlogPostListTests(FunctionalTestWebAppFactory factory) : BaseFun
     [Fact]
     public async Task Should_ReturnOk_WithSortedListAndObjectsContainingTheSearchTerm_WhenBlogPostExists()
     {
+        // Arrange
+        await CreateBlogPostsAsync();
+        
         // Act
         var response =
             await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&SearchTerm=abc");
@@ -93,29 +125,17 @@ public class GetBlogPostListTests(FunctionalTestWebAppFactory factory) : BaseFun
     [Fact]
     public async Task Should_Return500Error_WhenPageParameterIsZero()
     {
+        // Arrange
+        await CreateBlogPostsAsync();
+        
         // Act
         var response = await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=0&PageSize=10");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
     }
-}
 
-public class GetBlogPostListIsolatedTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
-{
-    [Fact]
-    public async Task Should_ReturnOk_WithEmptyList_WhenBlogPostTableIsEmpty()
-    {
-        // Arrange
-        await HttpClient.DeleteAsync($"{BlogPostEndpoint}/1");
-        await HttpClient.DeleteAsync($"{BlogPostEndpoint}/2");
-        
-        // Act
-        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10");
+    public Task InitializeAsync() => ResetDatabase();
 
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var result = await response.Content.ReadFromJsonAsync<PagedList<BlogPostDto>>();
-        result?.Items.Should().BeEmpty();
-    }
+    public Task DisposeAsync() => Task.CompletedTask;
 }

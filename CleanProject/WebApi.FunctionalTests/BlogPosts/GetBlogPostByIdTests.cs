@@ -1,13 +1,13 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using Application.Features.BlogPosts.DTOs;
 using Domain.Entities;
 using FluentAssertions;
 using WebApi.FunctionalTests.Abstractions;
 
 namespace WebApi.FunctionalTests.BlogPosts;
 
-public class GetBlogPostByIdTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
+[Collection(nameof(SharedTestCollection))]
+public class GetBlogPostByIdTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory), IAsyncLifetime
 {
     [Fact]
     public async Task Should_ReturnOk_WhenBlogPostExists()
@@ -33,4 +33,8 @@ public class GetBlogPostByIdTests(FunctionalTestWebAppFactory factory) : BaseFun
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
+
+    public Task InitializeAsync() => ResetDatabase();
+
+    public Task DisposeAsync() => Task.CompletedTask;
 }

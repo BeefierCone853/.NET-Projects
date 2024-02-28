@@ -9,7 +9,9 @@ using WebApi.FunctionalTests.Extensions;
 
 namespace WebApi.FunctionalTests.BlogPosts;
 
-public class UpdateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
+[Collection(nameof(SharedTestCollection))]
+public class UpdateBlogPostTests(FunctionalTestWebAppFactory factory)
+    : BaseFunctionalTest(factory), IAsyncLifetime
 {
     [Fact]
     public async Task Should_ReturnNoContent_WhenBlogPostWasUpdated()
@@ -88,4 +90,8 @@ public class UpdateBlogPostTests(FunctionalTestWebAppFactory factory) : BaseFunc
             BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingDescription
         ]);
     }
+
+    public Task InitializeAsync() => ResetDatabase();
+
+    public Task DisposeAsync() => Task.CompletedTask;
 }

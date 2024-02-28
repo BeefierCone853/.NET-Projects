@@ -3,19 +3,28 @@ using Application.Features.BlogPosts.DTOs;
 
 namespace WebApi.FunctionalTests.Abstractions;
 
-public class BaseFunctionalTest(FunctionalTestWebAppFactory factory) : IClassFixture<FunctionalTestWebAppFactory>
+public abstract class BaseFunctionalTest(FunctionalTestWebAppFactory factory)
 {
-    protected HttpClient HttpClient { get; } = factory.CreateClient();
+    protected HttpClient HttpClient { get; } = factory.HttpClient;
     protected const string BlogPostEndpoint = "api/v1/blogposts";
+    protected readonly Func<Task> ResetDatabase = factory.ResetDatabaseAsync;
     protected const string FirstTitle = "abc";
     protected const string FirstDescription = "abc";
     protected const string SecondTitle = "bca";
     protected const string SecondDescription = "bca";
 
-    protected async Task<int> CreateBlogPostAsync()
+    protected async Task<int> CreateBlogPostAsync(
+        string title = "This is the title",
+        string description = "This is the description")
     {
-        var request = new CreateBlogPostDto("This is the title", "This is the description");
+        var request = new CreateBlogPostDto(title, description);
         var response = await HttpClient.PostAsJsonAsync($"{BlogPostEndpoint}", request);
         return await response.Content.ReadFromJsonAsync<int>();
+    }
+
+    protected async Task CreateBlogPostsAsync()
+    {
+        await CreateBlogPostAsync(FirstTitle, FirstDescription);
+        await CreateBlogPostAsync(SecondTitle, SecondDescription);
     }
 }

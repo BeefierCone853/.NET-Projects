@@ -1,11 +1,12 @@
-﻿using Domain.Entities;
-using Infrastructure.Data;
+﻿using Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Npgsql;
+using Respawn;
 using Testcontainers.PostgreSql;
 
 namespace WebApi.FunctionalTests.Abstractions;
@@ -19,6 +20,10 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
         .WithPassword("postgres")
         .Build();
 
+    private NpgsqlConnection _dbConnection = null!;
+    private Respawner _respawner = null!;
+    public HttpClient HttpClient { get; private set; } = null!;
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureTestServices(services =>
@@ -29,22 +34,27 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
         });
     }
 
+    public async Task ResetDatabaseAsync()
+    {
+        await _respawner.ResetAsync(_dbConnection);
+    }
+
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
-        using var scope = Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        dbContext.BlogPosts.Add(new BlogPost
+        _dbConnection = new NpgsqlConnection(_dbContainer.GetConnectionString());
+        HttpClient = CreateClient();
+        await InitializeRespawner(_dbConnection);
+    }
+
+    private async Task InitializeRespawner(NpgsqlConnection dbConnection)
+    {
+        await dbConnection.OpenAsync();
+        _respawner = await Respawner.CreateAsync(dbConnection, new RespawnerOptions
         {
-            Title = "abc",
-            Description = "abc"
+            DbAdapter = DbAdapter.Postgres,
+            SchemasToInclude = ["public"]
         });
-        dbContext.BlogPosts.Add(new BlogPost
-        {
-            Title = "bca",
-            Description = "bca"
-        });
-        await dbContext.SaveChangesAsync();
     }
 
     public new async Task DisposeAsync() => await _dbContainer.DisposeAsync();
