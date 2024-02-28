@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using Domain.Entities;
+using Domain.Features.BlogPosts;
 using FluentAssertions;
 using WebApi.FunctionalTests.Abstractions;
 

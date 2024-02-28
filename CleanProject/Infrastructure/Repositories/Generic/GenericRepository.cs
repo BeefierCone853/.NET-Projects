@@ -1,5 +1,5 @@
+using Domain.Abstractions;
 using Domain.Primitives;
-using Domain.Repositories.Generic;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 

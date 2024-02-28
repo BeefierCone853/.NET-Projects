@@ -22,11 +22,11 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{41B100A5-239B-40B6-9F92-CD9A46849835}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.UnitTests", "Application.UnitTests\Application.UnitTests.csproj", "{72119B84-19AB-47C8-8C1C-91F184EF9200}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.UnitTests", "Application.UnitTests\Application.UnitTests.csproj", "{72119B84-19AB-47C8-8C1C-91F184EF9200}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi.FunctionalTests", "WebApi.FunctionalTests\WebApi.FunctionalTests.csproj", "{D01787F0-33AC-4583-85BB-C5FAE9D6BA95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi.FunctionalTests", "WebApi.FunctionalTests\WebApi.FunctionalTests.csproj", "{D01787F0-33AC-4583-85BB-C5FAE9D6BA95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.IntegrationTests", "Application.IntegrationTests\Application.IntegrationTests.csproj", "{DC2E5B39-313C-4DE4-A3C2-276B7960F546}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.IntegrationTests", "Application.IntegrationTests\Application.IntegrationTests.csproj", "{DC2E5B39-313C-4DE4-A3C2-276B7960F546}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -2,8 +2,7 @@
 using Application.Features.BlogPosts.Commands.CreateBlogPost;
 using Application.Features.BlogPosts.DTOs;
 using AutoMapper;
-using Domain.Entities;
-using Domain.Repositories;
+using Domain.Features.BlogPosts;
 using Domain.Shared;
 using FluentAssertions;
 using NSubstitute;

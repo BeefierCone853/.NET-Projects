@@ -6,7 +6,6 @@ using Application.Features.BlogPosts.DTOs;
 using Application.Features.BlogPosts.Queries.GetBlogPostById;
 using Application.Features.BlogPosts.Queries.GetBlogPostList;
 using Application.IntegrationTests.Abstractions;
-using Domain.Entities;
 using Domain.Features.BlogPosts;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;

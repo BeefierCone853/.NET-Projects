@@ -1,7 +1,6 @@
-using Domain.Entities;
-using Domain.Repositories.Generic;
+using Domain.Abstractions;
 
-namespace Domain.Repositories;
+namespace Domain.Features.BlogPosts;
 
 /// <summary>
 /// Repository for performing database operations on <see cref="BlogPost"/> entity.

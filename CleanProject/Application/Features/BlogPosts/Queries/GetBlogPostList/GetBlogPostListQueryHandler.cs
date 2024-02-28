@@ -2,8 +2,7 @@
 using Application.Abstractions.Messaging;
 using Application.Features.BlogPosts.DTOs;
 using Application.Helpers;
-using Domain.Entities;
-using Domain.Repositories;
+using Domain.Features.BlogPosts;
 using Domain.Shared;
 
 namespace Application.Features.BlogPosts.Queries.GetBlogPostList;

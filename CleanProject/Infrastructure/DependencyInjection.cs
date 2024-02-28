@@ -1,5 +1,5 @@
 using Application.Abstractions.Data;
-using Domain.Repositories;
+using Domain.Features.BlogPosts;
 using Domain.Shared;
 using Infrastructure.Data;
 using Infrastructure.Repositories;

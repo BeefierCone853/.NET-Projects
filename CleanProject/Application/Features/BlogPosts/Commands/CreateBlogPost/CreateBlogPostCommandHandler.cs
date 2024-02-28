@@ -1,8 +1,7 @@
 using Application.Abstractions.Data;
 using Application.Abstractions.Messaging;
 using AutoMapper;
-using Domain.Entities;
-using Domain.Repositories;
+using Domain.Features.BlogPosts;
 using Domain.Shared;
 
 namespace Application.Features.BlogPosts.Commands.CreateBlogPost;

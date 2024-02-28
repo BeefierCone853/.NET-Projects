@@ -1,5 +1,4 @@
-using Domain.Entities;
-using Domain.Repositories;
+using Domain.Features.BlogPosts;
 using Infrastructure.Data;
 using Infrastructure.Repositories.Generic;
 

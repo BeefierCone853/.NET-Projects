@@ -1,6 +1,6 @@
 using Domain.Primitives;
 
-namespace Domain.Entities;
+namespace Domain.Features.BlogPosts;
 
 /// <summary>
 /// Represents a blog post entity.

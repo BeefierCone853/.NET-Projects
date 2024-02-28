@@ -1,7 +1,6 @@
 ﻿using Application.Abstractions.Data;
 using Application.Abstractions.Messaging;
 using Domain.Features.BlogPosts;
-using Domain.Repositories;
 using Domain.Shared;
 
 namespace Application.Features.BlogPosts.Commands.DeleteBlogPost;

@@ -1,6 +1,6 @@
 using Application.Features.BlogPosts.DTOs;
 using AutoMapper;
-using Domain.Entities;
+using Domain.Features.BlogPosts;
 
 namespace Application.Profiles;
 

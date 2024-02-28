@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using Domain.Features.BlogPosts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Abstractions.Data;

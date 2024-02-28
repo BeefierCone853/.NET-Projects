@@ -1,6 +1,6 @@
 using Domain.Primitives;
 
-namespace Domain.Repositories.Generic;
+namespace Domain.Abstractions;
 
 /// <summary>
 /// Defines common operations for all repositories.

@@ -1,8 +1,7 @@
 ﻿using Application.Features.BlogPosts.DTOs;
 using Application.Features.BlogPosts.Queries.GetBlogPostList;
 using Application.Helpers;
-using Domain.Entities;
-using Domain.Repositories;
+using Domain.Features.BlogPosts;
 using Domain.Shared;
 using FluentAssertions;
 using MockQueryable.NSubstitute;

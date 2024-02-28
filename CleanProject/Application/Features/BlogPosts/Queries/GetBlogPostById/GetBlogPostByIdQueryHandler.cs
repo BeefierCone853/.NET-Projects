@@ -2,7 +2,6 @@ using Application.Abstractions.Messaging;
 using Application.Features.BlogPosts.DTOs;
 using AutoMapper;
 using Domain.Features.BlogPosts;
-using Domain.Repositories;
 using Domain.Shared;
 
 namespace Application.Features.BlogPosts.Queries.GetBlogPostById;

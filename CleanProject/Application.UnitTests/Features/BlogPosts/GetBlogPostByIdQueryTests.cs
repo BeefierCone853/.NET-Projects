@@ -1,9 +1,7 @@
 ﻿using Application.Features.BlogPosts.DTOs;
 using Application.Features.BlogPosts.Queries.GetBlogPostById;
 using AutoMapper;
-using Domain.Entities;
 using Domain.Features.BlogPosts;
-using Domain.Repositories;
 using Domain.Shared;
 using FluentAssertions;
 using NSubstitute;

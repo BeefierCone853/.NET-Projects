@@ -1,5 +1,5 @@
 using Application.Abstractions.Data;
-using Domain.Entities;
+using Domain.Features.BlogPosts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data;
