@@ -9,7 +9,7 @@ The API endpoints are built using [**Minimal APIs**](https://learn.microsoft.com
 
 ## Technology Stack
 
-This section contains a quick overview on the technology stack of the application.
+This section contains a quick overview of the technology stack of the application.
 
 ### Entity Framework Core
 
