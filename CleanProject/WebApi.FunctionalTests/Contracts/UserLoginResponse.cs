@@ -1,6 +1,6 @@
 ﻿namespace WebApi.FunctionalTests.Contracts;
 
-public class UserLoginResponse
+internal sealed class UserLoginResponse
 {
     public string TokenType { get; set; }
     public string AccessToken { get; set; }

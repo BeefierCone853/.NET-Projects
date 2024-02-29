@@ -1,3 +1,3 @@
 ﻿namespace WebApi.FunctionalTests.Contracts;
 
-public record UserLoginRequest(string Email, string Password);
+internal sealed record UserLoginRequest(string Email, string Password);
