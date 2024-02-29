@@ -22,8 +22,31 @@ services:
       - POSTGRES_DB=cleanproject
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-    
-
+  
+  cleanproject-identity:
+    image: postgres:16.2
+    container_name: CleanProject.Identity
+    volumes:
+      - ./.containers/cleanproject-identity:/var/lib/postgresql/data
+    ports:
+      - "5433:5433"
+    environment:
+      - POSTGRES_DB=identity
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  
+  cleanproject-pgadmin:
+    image: dpage/pgadmin4
+    container_name: CleanProject.PgAdmin
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: cleanproject@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: cleanproject
+    volumes:
+      - ./.containers/cleanproject-pgadmin:/var/lib/pgadmin/data
+  
+  
   cleanproject-seq:
     image: datalust/seq:latest
     container_name: CleanProject.seq

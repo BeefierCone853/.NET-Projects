@@ -2,6 +2,7 @@ using Application;
 using Asp.Versioning;
 using Carter;
 using Infrastructure;
+using Microsoft.AspNetCore.Identity;
 using Serilog;
 using WebApi.Extensions;
 using WebApi.Infrastructure;
@@ -67,6 +68,8 @@ if (app.Environment.IsDevelopment())
     });
     app.ApplyMigrations();
 }
+
+app.MapIdentityApi<IdentityUser>();
 
 app.UseHttpsRedirection();
 

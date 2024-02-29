@@ -16,6 +16,8 @@ public static class MigrationExtensions
     {
         using IServiceScope scope = app.ApplicationServices.CreateScope();
         using ApplicationDbContext dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        using IdentityDataContext identityDbContext = scope.ServiceProvider.GetRequiredService<IdentityDataContext>();
         dbContext.Database.Migrate();
+        identityDbContext.Database.Migrate();
     }
 }
