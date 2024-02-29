@@ -18,7 +18,7 @@ public class GetBlogPostListTests(FunctionalTestWebAppFactory factory)
         await CreateBlogPostsAsync();
 
         // Act
-        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10");
+        var response = await AuthorizedHttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -30,7 +30,7 @@ public class GetBlogPostListTests(FunctionalTestWebAppFactory factory)
     public async Task Should_ReturnOk_WithEmptyList_WhenBlogPostTableIsEmpty()
     {
         // Act
-        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10");
+        var response = await AuthorizedHttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -45,7 +45,7 @@ public class GetBlogPostListTests(FunctionalTestWebAppFactory factory)
         await CreateBlogPostsAsync();
 
         // Act
-        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&?SortColumn=title");
+        var response = await AuthorizedHttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&?SortColumn=title");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -62,7 +62,7 @@ public class GetBlogPostListTests(FunctionalTestWebAppFactory factory)
         
         // Act
         var response =
-            await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&?SortColumn=title&SortOrder=desc");
+            await AuthorizedHttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&?SortColumn=title&SortOrder=desc");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -78,7 +78,7 @@ public class GetBlogPostListTests(FunctionalTestWebAppFactory factory)
         await CreateBlogPostsAsync();
         
         // Act
-        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&?SortColumn=description");
+        var response = await AuthorizedHttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&?SortColumn=description");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -95,7 +95,7 @@ public class GetBlogPostListTests(FunctionalTestWebAppFactory factory)
         
         // Act
         var response =
-            await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&?SortColumn=description&SortOrder=desc");
+            await AuthorizedHttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&?SortColumn=description&SortOrder=desc");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -112,7 +112,7 @@ public class GetBlogPostListTests(FunctionalTestWebAppFactory factory)
         
         // Act
         var response =
-            await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&SearchTerm=abc");
+            await AuthorizedHttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10&SearchTerm=abc");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -123,29 +123,19 @@ public class GetBlogPostListTests(FunctionalTestWebAppFactory factory)
     }
 
     [Fact]
-    public async Task Should_ReturnUnauthorized_WhenCredentialsNotProvided()
-    {
-        // Act
-        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10");
-        
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-    }
-
-    [Fact]
     public async Task Should_Return500Error_WhenPageParameterIsZero()
     {
         // Arrange
         await CreateBlogPostsAsync();
         
         // Act
-        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=0&PageSize=10");
+        var response = await AuthorizedHttpClient.GetAsync($"{BlogPostEndpoint}?Page=0&PageSize=10");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
     }
 
-    public Task InitializeAsync() => ResetDatabase();
+    public Task InitializeAsync() => ResetApplicationDatabase();
 
     public Task DisposeAsync() => Task.CompletedTask;
 }

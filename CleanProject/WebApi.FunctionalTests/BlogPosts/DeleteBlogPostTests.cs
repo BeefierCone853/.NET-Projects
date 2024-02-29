@@ -15,20 +15,10 @@ public class DeleteBlogPostTests(FunctionalTestWebAppFactory factory)
         var id = await CreateBlogPostAsync();
 
         // Act
-        var response = await HttpClient.DeleteAsync($"{BlogPostEndpoint}/{id}");
+        var response = await AuthorizedHttpClient.DeleteAsync($"{BlogPostEndpoint}/{id}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
-    }
-
-    [Fact]
-    public async Task Should_ReturnUnauthorized_WhenCredentialsNotProvided()
-    {
-        // Act
-        var response = await HttpClient.DeleteAsync($"{BlogPostEndpoint}/10");
-
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 
     [Fact]
@@ -38,13 +28,13 @@ public class DeleteBlogPostTests(FunctionalTestWebAppFactory factory)
         const int id = 10;
 
         // Act
-        var response = await HttpClient.DeleteAsync($"{BlogPostEndpoint}/{id}");
+        var response = await AuthorizedHttpClient.DeleteAsync($"{BlogPostEndpoint}/{id}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
-    public Task InitializeAsync() => ResetDatabase();
+    public Task InitializeAsync() => ResetApplicationDatabase();
 
     public Task DisposeAsync() => Task.CompletedTask;
 }

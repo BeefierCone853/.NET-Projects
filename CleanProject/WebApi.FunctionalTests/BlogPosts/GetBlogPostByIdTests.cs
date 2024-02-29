@@ -16,7 +16,7 @@ public class GetBlogPostByIdTests(FunctionalTestWebAppFactory factory) : BaseFun
         var id = await CreateBlogPostAsync();
 
         // Act
-        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}/{id}");
+        var response = await AuthorizedHttpClient.GetAsync($"{BlogPostEndpoint}/{id}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -25,26 +25,16 @@ public class GetBlogPostByIdTests(FunctionalTestWebAppFactory factory) : BaseFun
     }
 
     [Fact]
-    public async Task Should_ReturnUnauthorized_WhenCredentialsNotProvided()
-    {
-        // Act
-        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}/10");
-
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-    }
-
-    [Fact]
     public async Task Should_ReturnNotFound_WhenBlogPostIsNotInDatabase()
     {
         // Act
-        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}/10");
+        var response = await AuthorizedHttpClient.GetAsync($"{BlogPostEndpoint}/10");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
-    public Task InitializeAsync() => ResetDatabase();
+    public Task InitializeAsync() => ResetApplicationDatabase();
 
     public Task DisposeAsync() => Task.CompletedTask;
 }

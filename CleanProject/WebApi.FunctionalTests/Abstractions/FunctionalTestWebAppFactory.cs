@@ -1,4 +1,7 @@
-﻿using Infrastructure.Data;
+﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using Domain.Shared;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -8,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Npgsql;
 using Respawn;
 using Testcontainers.PostgreSql;
+using WebApi.FunctionalTests.Contracts;
 
 namespace WebApi.FunctionalTests.Abstractions;
 
@@ -19,7 +23,7 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
         .WithUsername("postgres")
         .WithPassword("postgres")
         .Build();
-    
+
     private readonly PostgreSqlContainer _dbIdentityContainer = new PostgreSqlBuilder()
         .WithImage("postgres:16.2")
         .WithDatabase("identity")
@@ -28,8 +32,11 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
         .Build();
 
     private NpgsqlConnection _dbConnection = null!;
-    private Respawner _respawner = null!;
-    public HttpClient HttpClient { get; private set; } = null!;
+    private NpgsqlConnection _dbIdentityConnection = null!;
+    private Respawner _applicationRespawner = null!;
+    private Respawner _identityRespawner = null!;
+    public HttpClient AuthorizedHttpClient { get; private set; } = null!;
+    public HttpClient UnauthorizedHttpClient { get; private set; } = null!;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -51,22 +58,43 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
         await _dbContainer.StartAsync();
         await _dbIdentityContainer.StartAsync();
         _dbConnection = new NpgsqlConnection(_dbContainer.GetConnectionString());
-        HttpClient = CreateClient();
-        await InitializeRespawner(_dbConnection);
+        _dbIdentityConnection = new NpgsqlConnection(_dbIdentityContainer.GetConnectionString());
+        AuthorizedHttpClient = CreateClient();
+        UnauthorizedHttpClient = CreateClient();
+        _identityRespawner = await InitializeRespawner(_dbIdentityConnection);
+        _applicationRespawner = await InitializeRespawner(_dbConnection);
+        var bearer = await GetBearer(AuthorizedHttpClient);
+        AuthorizedHttpClient.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", bearer);
     }
 
-    private async Task InitializeRespawner(NpgsqlConnection dbConnection)
+    private static async Task<string> GetBearer(HttpClient httpClient)
+    {
+        var request = new UserLoginRequest("cleanproject@gmail.com", "Cleanproject1@");
+        await httpClient.PostAsJsonAsync("/register", request);
+        var result = await httpClient.PostAsJsonAsync("/login", request);
+        var response = await result.Content.ReadFromJsonAsync<UserLoginResponse>();
+        Ensure.NotNullOrEmpty(response?.AccessToken);
+        return response.AccessToken;
+    }
+
+    private static async Task<Respawner> InitializeRespawner(NpgsqlConnection dbConnection)
     {
         await dbConnection.OpenAsync();
-        _respawner = await Respawner.CreateAsync(dbConnection, new RespawnerOptions
+        return await Respawner.CreateAsync(dbConnection, new RespawnerOptions
         {
             DbAdapter = DbAdapter.Postgres,
             SchemasToInclude = ["public"]
         });
     }
 
-    public async Task ResetDatabaseAsync()
+    public async Task ResetApplicationDatabaseAsync()
     {
-        await _respawner.ResetAsync(_dbConnection);
+        await _applicationRespawner.ResetAsync(_dbConnection);
+    }
+
+    public async Task ResetIdentityDatabaseAsync()
+    {
+        await _identityRespawner.ResetAsync(_dbIdentityConnection);
     }
 }

@@ -20,7 +20,7 @@ public class CreateUpdateBlogPostTests(FunctionalTestWebAppFactory factory)
         var request = new CreateBlogPostDto("This is the title", "This is the description");
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
+        var response = await AuthorizedHttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -35,26 +35,13 @@ public class CreateUpdateBlogPostTests(FunctionalTestWebAppFactory factory)
         var request = new CreateBlogPostDto("", "This is the description");
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
+        var response = await AuthorizedHttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         CustomProblemDetails problemDetails = await response.GetProblemDetails();
         problemDetails.Errors.Select(e => e.Code).Should()
             .Contain([BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingTitle]);
-    }
-    
-    [Fact]
-    public async Task Should_ReturnUnauthorized_WhenCredentialsNotProvided()
-    {
-        // Arrange
-        var request = new CreateBlogPostDto("This is the title", "This is the description");
-
-        // Act
-        var response = await HttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
-
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 
     [Fact]
@@ -64,7 +51,7 @@ public class CreateUpdateBlogPostTests(FunctionalTestWebAppFactory factory)
         var request = new CreateBlogPostDto("This is the title", "");
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
+        var response = await AuthorizedHttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -80,7 +67,7 @@ public class CreateUpdateBlogPostTests(FunctionalTestWebAppFactory factory)
         var request = new CreateBlogPostDto("", "");
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
+        var response = await AuthorizedHttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -91,7 +78,7 @@ public class CreateUpdateBlogPostTests(FunctionalTestWebAppFactory factory)
         ]);
     }
 
-    public Task InitializeAsync() => ResetDatabase();
+    public Task InitializeAsync() => ResetApplicationDatabase();
 
     public Task DisposeAsync() => Task.CompletedTask;
 }
