@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Application.Features.BlogPosts.Commands.CreateBlogPost;
 using Application.Features.BlogPosts.Commands.DeleteBlogPost;
 using Application.Features.BlogPosts.Commands.UpdateBlogPost;
@@ -25,9 +24,9 @@ public class BlogPostEndpoints : ICarterModule
     /// <param name="app">Route builder.</param>
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("blogposts");
+        var group = app.MapGroup("blogposts").RequireAuthorization();
         group.MapPost("", CreateBlogPost);
-        group.MapGet("", GetBlogPostList).RequireAuthorization();
+        group.MapGet("", GetBlogPostList);
         group.MapGet("{id:int}", GetBlogPostById);
         group.MapPut("{id:int}", UpdateBlogPost);
         group.MapDelete("{id:int}", DeleteBlogPost);
@@ -36,13 +35,11 @@ public class BlogPostEndpoints : ICarterModule
     /// <summary>
     /// Retrieves all blog posts.
     /// </summary>
-    /// <param name="user">User trying to access the resources.</param>
     /// <param name="searchQuery">Query parameters.</param>
     /// <param name="sender">Sends a request through the mediator pipeline.</param>
     /// <param name="cancellationToken">Signals if a task or operation should be cancelled.</param>
     /// <returns>List of blog posts.</returns>
     public static async Task<IResult> GetBlogPostList(
-        ClaimsPrincipal user,
         [AsParameters] SearchQuery searchQuery,
         ISender sender,
         CancellationToken cancellationToken)

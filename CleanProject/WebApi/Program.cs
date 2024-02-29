@@ -3,7 +3,9 @@ using Asp.Versioning;
 using Carter;
 using Infrastructure;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.OpenApi.Models;
 using Serilog;
+using Swashbuckle.AspNetCore.Filters;
 using WebApi.Extensions;
 using WebApi.Infrastructure;
 using WebApi.Middleware;
@@ -15,7 +17,16 @@ builder.Host.UseSerilog((context, loggerConfig) =>
     loggerConfig.ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
+});
 
 builder.Services
     .AddApplication()
