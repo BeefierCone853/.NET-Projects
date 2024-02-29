@@ -25,6 +25,16 @@ public class GetBlogPostByIdTests(FunctionalTestWebAppFactory factory) : BaseFun
     }
 
     [Fact]
+    public async Task Should_ReturnUnauthorized_WhenCredentialsNotProvided()
+    {
+        // Act
+        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}/10");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
     public async Task Should_ReturnNotFound_WhenBlogPostIsNotInDatabase()
     {
         // Act

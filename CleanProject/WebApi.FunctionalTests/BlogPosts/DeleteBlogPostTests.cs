@@ -22,6 +22,16 @@ public class DeleteBlogPostTests(FunctionalTestWebAppFactory factory)
     }
 
     [Fact]
+    public async Task Should_ReturnUnauthorized_WhenCredentialsNotProvided()
+    {
+        // Act
+        var response = await HttpClient.DeleteAsync($"{BlogPostEndpoint}/10");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
     public async Task Should_ReturnNotFound_WhenBlogPostIsNotInDatabase()
     {
         // Arrange

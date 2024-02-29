@@ -43,6 +43,19 @@ public class CreateUpdateBlogPostTests(FunctionalTestWebAppFactory factory)
         problemDetails.Errors.Select(e => e.Code).Should()
             .Contain([BlogPostErrorCodes.SharedCreateUpdateBlogPost.MissingTitle]);
     }
+    
+    [Fact]
+    public async Task Should_ReturnUnauthorized_WhenCredentialsNotProvided()
+    {
+        // Arrange
+        var request = new CreateBlogPostDto("This is the title", "This is the description");
+
+        // Act
+        var response = await HttpClient.PostAsJsonAsync(BlogPostEndpoint, request);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
 
     [Fact]
     public async Task Should_ReturnBadRequest_WhenDescriptionIsMissing()

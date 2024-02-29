@@ -28,6 +28,19 @@ public class UpdateBlogPostTests(FunctionalTestWebAppFactory factory)
     }
 
     [Fact]
+    public async Task Should_ReturnUnauthorized_WhenCredentialsNotProvided()
+    {
+        // Arrange
+        var updateRequest = new UpdateBlogPostDto("New title", "New description");
+        
+        // Act
+        var response = await HttpClient.PutAsJsonAsync($"{BlogPostEndpoint}/{10}", updateRequest);
+        
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
     public async Task Should_ReturnNotFound_WhenBlogPostIsNotInDatabase()
     {
         // Arrange

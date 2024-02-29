@@ -123,6 +123,16 @@ public class GetBlogPostListTests(FunctionalTestWebAppFactory factory)
     }
 
     [Fact]
+    public async Task Should_ReturnUnauthorized_WhenCredentialsNotProvided()
+    {
+        // Act
+        var response = await HttpClient.GetAsync($"{BlogPostEndpoint}?Page=1&PageSize=10");
+        
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
     public async Task Should_Return500Error_WhenPageParameterIsZero()
     {
         // Arrange

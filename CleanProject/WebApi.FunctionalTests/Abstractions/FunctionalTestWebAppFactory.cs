@@ -19,6 +19,13 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
         .WithUsername("postgres")
         .WithPassword("postgres")
         .Build();
+    
+    private readonly PostgreSqlContainer _dbIdentityContainer = new PostgreSqlBuilder()
+        .WithImage("postgres:16.2")
+        .WithDatabase("identity")
+        .WithUsername("postgres")
+        .WithPassword("postgres")
+        .Build();
 
     private NpgsqlConnection _dbConnection = null!;
     private Respawner _respawner = null!;
@@ -31,6 +38,9 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
             services.RemoveAll(typeof(DbContextOptions<ApplicationDbContext>));
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(_dbContainer.GetConnectionString()));
+            services.RemoveAll(typeof(DbContextOptions<IdentityDataContext>));
+            services.AddDbContext<IdentityDataContext>(options =>
+                options.UseNpgsql(_dbIdentityContainer.GetConnectionString()));
         });
     }
 
@@ -39,6 +49,7 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
+        await _dbIdentityContainer.StartAsync();
         _dbConnection = new NpgsqlConnection(_dbContainer.GetConnectionString());
         HttpClient = CreateClient();
         await InitializeRespawner(_dbConnection);
