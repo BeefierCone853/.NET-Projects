@@ -10,11 +10,14 @@
         "projectUniqueName": "C:\\Erik Folder\\Software\\GitHub\\.NET-Projects\\CoreProject\\API\\CoreProjectAPI\\CoreProjectAPI.csproj",
         "projectName": "CoreProjectAPI",
         "projectPath": "C:\\Erik Folder\\Software\\GitHub\\.NET-Projects\\CoreProject\\API\\CoreProjectAPI\\CoreProjectAPI.csproj",
-        "packagesPath": "C:\\Users\\erikm\\.nuget\\packages\\",
+        "packagesPath": "C:\\Users\\Korisnik\\.nuget\\packages\\",
         "outputPath": "C:\\Erik Folder\\Software\\GitHub\\.NET-Projects\\CoreProject\\API\\CoreProjectAPI\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\erikm\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Korisnik\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -94,7 +97,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

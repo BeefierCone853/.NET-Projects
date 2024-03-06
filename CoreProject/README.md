@@ -3,6 +3,9 @@
 This is a .NET 8 project following the [**N-tier**]([https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html](https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/n-tier)). style
 The project is for learning purposes and testing new things.
 
+## UI
+The UI is made using **Angular 17**.
+
 ## Endpoints
 
 The API endpoints are built using controllers.
